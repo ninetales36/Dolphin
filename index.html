@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>海豚環島 7天時間表</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08090e;--card:#101420;--card2:#161c28;--border:#1e2838;--text:#dde4f2;--muted:#56677e;--accent:#ff4d1c;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;line-height:1.6;padding-bottom:40px;}
+.hero{padding:28px 20px 22px;background:linear-gradient(150deg,#0a0c16,#130918,#080d16);border-bottom:1px solid var(--border);}
+.hero h1{font-size:24px;font-weight:700;margin-bottom:3px;}
+.hero h1 em{color:var(--accent);font-style:normal;}
+.hero .sub{font-size:12px;color:var(--muted);}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;margin-top:18px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.stat{background:var(--card);padding:12px 8px;text-align:center;}
+.sv{font-family:'Share Tech Mono',monospace;font-size:20px;font-weight:700;line-height:1.1;}
+.sl{font-size:9px;color:var(--muted);letter-spacing:1.2px;margin-top:2px;}
+.warn{margin:14px 16px 0;padding:10px 14px;background:rgba(226,75,74,0.1);border:1px solid rgba(226,75,74,0.3);border-radius:8px;font-size:12px;color:#f0a0a0;line-height:1.8;}
+.warn strong{color:#e24b4a;}
+.days{padding:16px;display:flex;flex-direction:column;gap:12px;}
+.card{border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.card.ctrl{border-color:rgba(226,75,74,0.4);}
+.card-top{display:flex;}
+.badge{width:64px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 6px;gap:2px;}
+.badge .num{font-family:'Share Tech Mono',monospace;font-size:18px;font-weight:700;}
+.badge .lbl{font-size:9px;letter-spacing:1px;opacity:.65;}
+.content{flex:1;padding:12px 14px;border-left:1px solid var(--border);}
+.route-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.route-title{font-size:15px;font-weight:500;}
+.ctrl-pill{font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(226,75,74,0.15);color:#e24b4a;border:1px solid rgba(226,75,74,0.3);}
+.meta{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 0;margin-bottom:8px;}
+.meta-row{display:flex;gap:16px;flex-wrap:wrap;}
+.m{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;min-width:110px;}
+.m .label{font-size:10px;color:var(--muted);letter-spacing:.5px;}
+.m .val{font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:500;}
+.route-detail{font-size:11px;color:var(--muted);margin-bottom:6px;line-height:1.6;}
+.stay-row{font-size:12px;margin-bottom:6px;}
+.stay-row strong{color:var(--text);}
+.tip{font-size:11px;color:var(--muted);background:var(--card2);border-radius:6px;padding:8px 10px;line-height:1.7;}
+.tip.warn-tip{background:rgba(226,75,74,0.07);color:#c09090;}
+.foot{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--border);background:var(--card2);}
+.arrive{font-family:'Share Tech Mono',monospace;font-size:20px;font-weight:700;}
+.bar-wrap{flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;}
+.ok{font-size:16px;margin-left:4px;}
+.footer{margin:0 16px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.9;}
+.footer h3{font-size:12px;color:var(--text);margin-bottom:8px;}
+.fr{display:flex;gap:8px;margin-bottom:2px;}
+.fl{color:#e24b4a;width:80px;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>🐬 海豚環島 <em>7天</em>時間表</h1>
+  <p class="sub">方案A：新莊樂生療養院出發｜建議<strong style="color:#e8d060;">週三</strong>出發</p>
+  <div class="stats">
+    <div class="stat"><div class="sv" style="color:var(--accent)">1,569</div><div class="sl">總里程 KM</div></div>
+    <div class="stat"><div class="sv" style="color:#ef9f27">14,994</div><div class="sl">總爬升 M</div></div>
+    <div class="stat"><div class="sv" style="color:#7c6ee0">2,530</div><div class="sl">最高點 M</div></div>
+    <div class="stat"><div class="sv" style="color:#1d9e75">70.8</div><div class="sl">純騎 H</div></div>
+    <div class="stat"><div class="sv" style="color:#d4537e">7</div><div class="sl">天數</div></div>
+  </div>
+</div>
+<div class="warn">
+  <strong>⚠️ 南橫管制</strong>　D3 西段（梅山口）、D6 東段（向陽）管制路段，<strong>僅週五~週一 07:00 前進入，17:00 前離開</strong>。
+  週三出發 → D3＝週五 ✅，D6＝週一 ✅。
+</div>
+<div class="days">
+
+  <div class="card ">
+    <div class="card-top">
+      <div class="badge" style="background:#7c6ee018;">
+        <div class="num" style="color:#7c6ee0;">D1</div>
+        <div class="lbl" style="color:#7c6ee0;">DAY 1</div>
+      </div>
+      <div class="content">
+        <div class="route-head">
+          <span class="route-title">新莊樂生 <span style="color:var(--muted)">→</span> 梨山</span>
+          
+        </div>
+        <div class="meta-row">
+          <div class="m"><span class="label">里程</span><span class="val" style="color:#7c6ee0;">160 km</span></div>
+          <div class="m"><span class="label">爬升</span><span class="val" style="color:#ef9f27;">↑ 2,246 m</span></div>
+          <div class="m"><span class="label">最高點</span><span class="val" style="color:#ef9f27;">⛰ 1,230 m</span></div>
+          <div class="m"><span class="label">純騎時間</span><span class="val">🚴 7.8 h</span></div>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="route-detail">🛣 新莊→三峽→台3→復興→台7甲北橫→巴陵→思源啞口→南山→梨山</div>
+        <div class="stay-row">🏨 <strong>梨山</strong>　<span style="color:var(--muted);font-size:11px;">梨山賓館/天廬渡假村（需預訂）</span></div>
+        <div class="tip ">北橫台7甲全段爬升集中復興→巴陵段，海拔1960m，備好保暖。梨山有超市可大量補給。</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div>
+        <div style="font-size:10px;color:var(--muted);">06:00 出發 → 抵達住宿</div>
+        <div class="arrive" style="color:#1d9e75;">15:20</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:62%;background:#7c6ee0;"></div></div>
+      <div class="ok">✅</div>
+    </div>
+  </div>
+  <div class="card ">
+    <div class="card-top">
+      <div class="badge" style="background:#d85a3018;">
+        <div class="num" style="color:#d85a30;">D2</div>
+        <div class="lbl" style="color:#d85a30;">DAY 2</div>
+      </div>
+      <div class="content">
+        <div class="route-head">
+          <span class="route-title">梨山 <span style="color:var(--muted)">→</span> 水里</span>
+          
+        </div>
+        <div class="meta-row">
+          <div class="m"><span class="label">里程</span><span class="val" style="color:#d85a30;">240 km</span></div>
+          <div class="m"><span class="label">爬升</span><span class="val" style="color:#ef9f27;">↑ 3,897 m</span></div>
+          <div class="m"><span class="label">最高點</span><span class="val" style="color:#e24b4a;">⛰ 2,530 m</span></div>
+          <div class="m"><span class="label">純騎時間</span><span class="val">🚴 11.2 h</span></div>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="route-detail">🛣 梨山→力行產業道路（碎石最難段）→霧社→清境→廬山→埔里→水里</div>
+        <div class="stay-row">🏨 <strong>水里</strong>　<span style="color:var(--muted);font-size:11px;">水里鄉旅館 / 車埕民宿</span></div>
+        <div class="tip ">力行產業道路最硬，建議05:00出發。碎石路備備胎，最高2530m，約40km無訊號。</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div>
+        <div style="font-size:10px;color:var(--muted);">06:00 出發 → 抵達住宿</div>
+        <div class="arrive" style="color:#d85a30;">18:42</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:85%;background:#d85a30;"></div></div>
+      <div class="ok">✅</div>
+    </div>
+  </div>
+  <div class="card ctrl">
+    <div class="card-top">
+      <div class="badge" style="background:#e24b4a18;">
+        <div class="num" style="color:#e24b4a;">D3</div>
+        <div class="lbl" style="color:#e24b4a;">DAY 3</div>
+      </div>
+      <div class="content">
+        <div class="route-head">
+          <span class="route-title">水里 <span style="color:var(--muted)">→</span> 六龜</span>
+          <span class="ctrl-pill">⚠️ 南橫西段管制</span>
+        </div>
+        <div class="meta-row">
+          <div class="m"><span class="label">里程</span><span class="val" style="color:#e24b4a;">200 km</span></div>
+          <div class="m"><span class="label">爬升</span><span class="val" style="color:var(--muted);">↑ 763 m</span></div>
+          <div class="m"><span class="label">最高點</span><span class="val" style="color:var(--muted);">⛰ 338 m</span></div>
+          <div class="m"><span class="label">純騎時間</span><span class="val">🚴 8.6 h</span></div>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="route-detail">🛣 水里→信義→台21→南橫西段梅山口（管制⚠）→天池→出梅山口→甲仙→六龜</div>
+        <div class="stay-row">🏨 <strong>六龜</strong>　<span style="color:var(--muted);font-size:11px;">六龜溫泉旅館（泡腳犒賞！）</span></div>
+        <div class="tip warn-tip">⚠️ 南橫西段梅山口管制：07:00前進入，17:00前離開。D1=週三時D3=週五✅。</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div>
+        <div style="font-size:10px;color:var(--muted);">06:00 出發 → 抵達住宿</div>
+        <div class="arrive" style="color:#ef9f27;">16:07</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:68%;background:#e24b4a;"></div></div>
+      <div class="ok">✅</div>
+    </div>
+  </div>
+  <div class="card ">
+    <div class="card-top">
+      <div class="badge" style="background:#2c8fa318;">
+        <div class="num" style="color:#2c8fa3;">D4</div>
+        <div class="lbl" style="color:#2c8fa3;">DAY 4</div>
+      </div>
+      <div class="content">
+        <div class="route-head">
+          <span class="route-title">六龜 <span style="color:var(--muted)">→</span> 枋寮</span>
+          
+        </div>
+        <div class="meta-row">
+          <div class="m"><span class="label">里程</span><span class="val" style="color:#2c8fa3;">160 km</span></div>
+          <div class="m"><span class="label">爬升</span><span class="val" style="color:#f0d060;">↑ 1,241 m</span></div>
+          <div class="m"><span class="label">最高點</span><span class="val" style="color:var(--muted);">⛰ 816 m</span></div>
+          <div class="m"><span class="label">純騎時間</span><span class="val">🚴 7.1 h</span></div>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="route-detail">🛣 六龜→旗山→三地門→山地門→林邊→枋寮</div>
+        <div class="stay-row">🏨 <strong>枋寮</strong>　<span style="color:var(--muted);font-size:11px;">枋寮濱海旅館（平價）</span></div>
+        <div class="tip ">旗山老街午餐，三地門原住民文化。今天相對輕鬆，好好休息準備南迴。</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div>
+        <div style="font-size:10px;color:var(--muted);">06:00 出發 → 抵達住宿</div>
+        <div class="arrive" style="color:#1d9e75;">14:36</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:57%;background:#2c8fa3;"></div></div>
+      <div class="ok">✅</div>
+    </div>
+  </div>
+  <div class="card ">
+    <div class="card-top">
+      <div class="badge" style="background:#8b5e3c18;">
+        <div class="num" style="color:#8b5e3c;">D5</div>
+        <div class="lbl" style="color:#8b5e3c;">DAY 5</div>
+      </div>
+      <div class="content">
+        <div class="route-head">
+          <span class="route-title">枋寮 <span style="color:var(--muted)">→</span> 池上</span>
+          
+        </div>
+        <div class="meta-row">
+          <div class="m"><span class="label">里程</span><span class="val" style="color:#8b5e3c;">260 km</span></div>
+          <div class="m"><span class="label">爬升</span><span class="val" style="color:#f0d060;">↑ 1,735 m</span></div>
+          <div class="m"><span class="label">最高點</span><span class="val" style="color:var(--muted);">⛰ 643 m</span></div>
+          <div class="m"><span class="label">純騎時間</span><span class="val">🚴 11.3 h</span></div>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="route-detail">🛣 枋寮→楓港→南迴台9→大武→太麻里→知本→台東市→關山→池上</div>
+        <div class="stay-row">🏨 <strong>池上</strong>　<span style="color:var(--muted);font-size:11px;">池上民宿 / 伯朗大道附近</span></div>
+        <div class="tip ">南迴台9多大車，注意安全。台東市可以補給晚餐，池上米鄉有好民宿。</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div>
+        <div style="font-size:10px;color:var(--muted);">06:00 出發 → 抵達住宿</div>
+        <div class="arrive" style="color:#d85a30;">18:49</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:85%;background:#8b5e3c;"></div></div>
+      <div class="ok">✅</div>
+    </div>
+  </div>
+  <div class="card ctrl">
+    <div class="card-top">
+      <div class="badge" style="background:#d4537e18;">
+        <div class="num" style="color:#d4537e;">D6</div>
+        <div class="lbl" style="color:#d4537e;">DAY 6</div>
+      </div>
+      <div class="content">
+        <div class="route-head">
+          <span class="route-title">池上 <span style="color:var(--muted)">→</span> 花蓮市</span>
+          <span class="ctrl-pill">⚠️ 南橫東段管制</span>
+        </div>
+        <div class="meta-row">
+          <div class="m"><span class="label">里程</span><span class="val" style="color:#d4537e;">280 km</span></div>
+          <div class="m"><span class="label">爬升</span><span class="val" style="color:#ef9f27;">↑ 3,109 m</span></div>
+          <div class="m"><span class="label">最高點</span><span class="val" style="color:#e24b4a;">⛰ 2,310 m</span></div>
+          <div class="m"><span class="label">純騎時間</span><span class="val">🚴 12.7 h</span></div>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="route-detail">🛣 池上→海端→霧鹿→利稻→向陽→南橫東段（管制⚠）→出東口→富里→玉里→花蓮市</div>
+        <div class="stay-row">🏨 <strong>花蓮市</strong>　<span style="color:var(--muted);font-size:11px;">花蓮市旅館（美崙大道一帶）</span></div>
+        <div class="tip warn-tip">⚠️ 南橫東段向陽管制：07:00前進入，17:00前離開。D1=週三時D6=週一✅。最高2310m保暖。</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div>
+        <div style="font-size:10px;color:var(--muted);">06:00 出發 → 抵達住宿</div>
+        <div class="arrive" style="color:#e24b4a;">20:14</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:95%;background:#d4537e;"></div></div>
+      <div class="ok">✅</div>
+    </div>
+  </div>
+  <div class="card ">
+    <div class="card-top">
+      <div class="badge" style="background:#1d9e7518;">
+        <div class="num" style="color:#1d9e75;">D7</div>
+        <div class="lbl" style="color:#1d9e75;">DAY 7</div>
+      </div>
+      <div class="content">
+        <div class="route-head">
+          <span class="route-title">花蓮市 <span style="color:var(--muted)">→</span> 新莊樂生</span>
+          
+        </div>
+        <div class="meta-row">
+          <div class="m"><span class="label">里程</span><span class="val" style="color:#1d9e75;">269 km</span></div>
+          <div class="m"><span class="label">爬升</span><span class="val" style="color:#ef9f27;">↑ 2,003 m</span></div>
+          <div class="m"><span class="label">最高點</span><span class="val" style="color:var(--muted);">⛰ 385 m</span></div>
+          <div class="m"><span class="label">純騎時間</span><span class="val">🚴 12.0 h</span></div>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="route-detail">🛣 花蓮市→崇德→蘇花公路→南澳→礁溪→台2濱海→基隆→汐止→新莊</div>
+        <div class="stay-row">🏨 <strong>新莊樂生（終點）</strong>　<span style="color:var(--muted);font-size:11px;">完賽！</span></div>
+        <div class="tip ">蘇花公路注意大車，壯觀風景值得！礁溪溫泉強烈推薦泡湯。基隆廟口慶祝完賽。</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div>
+        <div style="font-size:10px;color:var(--muted);">06:00 出發 → 抵達住宿</div>
+        <div class="arrive" style="color:#d85a30;">19:29</div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:90%;background:#1d9e75;"></div></div>
+      <div class="ok">✅</div>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <h3>📋 南橫管制 & 速度模型</h3>
+  <div class="fr"><span class="fl">D3 西段</span>梅山口→天池→向陽（台20臨105線）　週五~一開放　07:00前進　17:00前出</div>
+  <div class="fr"><span class="fl">D6 東段</span>池上→海端→向陽（台20東段）　　　　同上規定</div>
+  <div class="fr"><span class="fl">查詢</span>168路況 168.thb.gov.tw　｜　玉山國家公園 ysnp.gov.tw</div>
+  <div class="fr" style="margin-top:6px;"><span class="fl">速度模型</span>平路24、緩坡16.5、中坡13、陡坡10、超陡8 km/h　下坡32~38（GPX梯度計算）</div>
+  <div class="fr"><span class="fl">停留時間</span>每天 1.5h（補給×2 + 午餐 + 雜項）　不含住宿睡眠</div>
+</div>
+</body></html>
