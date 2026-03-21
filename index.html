@@ -7,131 +7,115 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#0a0e1a; --card:#111827; --card2:#1a2236; --border:#1e3a5f;
-    --accent:#00d4ff; --accent2:#ff6b35; --accent3:#39ff14;
-    --warn:#ffd700; --danger:#ff3b3b; --sleep:#a855f7;
-    --text:#e2e8f0; --muted:#64748b; --finish:#00ff88;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-  .header{background:linear-gradient(135deg,#0a0e1a 0%,#0d1b3e 50%,#0a0e1a 100%);border-bottom:1px solid var(--border);padding:16px 20px;position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .header-title{display:flex;align-items:center;gap:12px;}
-  .logo{width:42px;height:42px;background:conic-gradient(var(--accent),var(--accent2),var(--accent3),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;animation:spin 8s linear infinite;flex-shrink:0;}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .title-text h1{font-size:20px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;}
-  .title-text p{font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:2px;}
-  .header-stats{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
-  .stat-pill{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;font-family:'Share Tech Mono',monospace;display:flex;align-items:center;gap:6px;}
-  .stat-pill .label{color:var(--muted);}
-  .stat-pill .val{color:var(--accent);font-weight:700;}
-  .tracker-bar{background:linear-gradient(90deg,#0d1b3e,#111827);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-  .tracker-label{font-size:11px;color:var(--accent);font-family:'Share Tech Mono',monospace;letter-spacing:1px;}
-  .gps-dot{width:8px;height:8px;border-radius:50%;background:var(--danger);animation:blink 1s infinite;}
-  .gps-dot.active{background:var(--accent3);}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-  .btn{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:'Noto Sans TC',sans-serif;font-size:12px;font-weight:500;transition:all 0.2s;}
-  .btn-primary{background:var(--accent);color:#000;}
-  .btn-primary:hover{background:#00b8e0;}
-  .btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--border);}
-  .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
-  .main{display:grid;grid-template-columns:1fr 420px;grid-template-rows:420px auto;gap:0;height:calc(100vh - 100px);}
-  #map{grid-column:1;grid-row:1;width:100%;height:100%;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
-  .progress-panel{grid-column:2;grid-row:1;background:var(--card);border-bottom:1px solid var(--border);overflow-y:auto;padding:16px;}
-  .panel-title{font-size:11px;letter-spacing:2px;color:var(--accent);font-family:'Share Tech Mono',monospace;margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:8px;}
-  .time-budget{background:var(--card2);border-radius:10px;padding:14px;margin-bottom:14px;border:1px solid var(--border);}
-  .budget-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;align-items:center;}
-  .budget-label{color:var(--muted);font-size:11px;}
-  .budget-val{font-family:'Share Tech Mono',monospace;font-weight:700;}
-  .progress-bar-wrap{background:#1a2236;border-radius:4px;height:8px;overflow:hidden;margin:4px 0 8px;}
-  .progress-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s ease;}
-  .time-remaining{text-align:center;margin-top:6px;}
-  .time-remaining .big{font-family:'Share Tech Mono',monospace;font-size:28px;background:linear-gradient(90deg,var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;}
-  .time-remaining .sub{font-size:11px;color:var(--muted);margin-top:2px;}
-  .next-cp-card{background:linear-gradient(135deg,#0d1b3e,#1a2236);border:1px solid var(--accent);border-radius:10px;padding:14px;margin-bottom:14px;}
-  .next-cp-card .cp-name{font-weight:700;font-size:15px;color:var(--accent);margin-bottom:4px;}
-  .next-cp-card .cp-dist{font-size:12px;color:var(--muted);}
-  .cp-times{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
-  .cp-time-box{background:var(--bg);border-radius:6px;padding:8px;text-align:center;}
-  .cp-time-box .t-label{font-size:10px;color:var(--muted);}
-  .cp-time-box .t-val{font-family:'Share Tech Mono',monospace;font-size:16px;font-weight:700;color:var(--accent3);}
-  .bottom-section{grid-column:1/3;grid-row:2;overflow-y:auto;background:var(--bg);}
-  .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0;z-index:10;}
-  .tab{padding:12px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;color:var(--muted);font-weight:500;}
-  .tab:hover{color:var(--text);}
-  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-  .table-wrap{overflow-x:auto;padding:16px;}
-  table{width:100%;border-collapse:collapse;font-size:13px;min-width:800px;}
-  th{background:var(--card2);color:var(--accent);padding:10px 12px;text-align:left;font-size:11px;letter-spacing:1px;font-family:'Share Tech Mono',monospace;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5;}
-  td{padding:9px 12px;border-bottom:1px solid rgba(30,58,95,0.4);vertical-align:middle;}
-  tr:hover td{background:rgba(0,212,255,0.04);}
-  .row-sleep td{background:rgba(168,85,247,0.08)!important;border-left:3px solid var(--sleep);}
-  .row-photo td{background:rgba(255,215,0,0.05)!important;}
-  .row-finish td{background:rgba(0,255,136,0.06)!important;border-left:3px solid var(--finish);}
-  .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:0.5px;}
-  .badge-sleep{background:rgba(168,85,247,0.2);color:var(--sleep);border:1px solid var(--sleep);}
-  .badge-supply{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid var(--accent);}
-  .badge-photo{background:rgba(255,215,0,0.1);color:var(--warn);border:1px solid var(--warn);}
-  .badge-finish{background:rgba(0,255,136,0.1);color:var(--finish);border:1px solid var(--finish);}
-  .badge-start{background:rgba(255,107,53,0.1);color:var(--accent2);border:1px solid var(--accent2);}
-  .time-mono{font-family:'Share Tech Mono',monospace;}
-  .nav-links{display:flex;gap:6px;flex-wrap:wrap;}
-  .nav-link{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;text-decoration:none;font-weight:500;transition:all 0.15s;}
-  .nav-google{background:rgba(66,133,244,0.15);color:#4285f4;border:1px solid rgba(66,133,244,0.3);}
-  .nav-apple{background:rgba(255,149,0,0.15);color:#ff9500;border:1px solid rgba(255,149,0,0.3);}
-  .nav-naver{background:rgba(3,199,90,0.15);color:#03c75a;border:1px solid rgba(3,199,90,0.3);}
-  .strategy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:20px;}
-  .strategy-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
-  .strategy-card h3{font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-  .strategy-card ul{list-style:none;}
-  .strategy-card li{font-size:12px;color:#94a3b8;padding:5px 0;border-bottom:1px solid rgba(30,58,95,0.3);display:flex;align-items:flex-start;gap:6px;}
-  .strategy-card li:last-child{border-bottom:none;}
-  .food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;padding:20px;}
-  .food-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-  .food-header{background:linear-gradient(90deg,var(--accent2),#ff9052);padding:10px 14px;font-weight:700;font-size:14px;color:#fff;}
-  .food-body{padding:12px;}
-  .food-tag{display:inline-block;background:rgba(255,107,53,0.1);color:var(--accent2);font-size:10px;padding:2px 8px;border-radius:10px;margin-top:6px;}
-  .sleep-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding:20px;}
-  .sleep-card{background:var(--card);border:1px solid var(--sleep);border-radius:10px;padding:18px;}
-  .sleep-card h3{color:var(--sleep);margin-bottom:12px;font-size:15px;}
-  .sleep-detail{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(168,85,247,0.15);}
-  .sleep-detail:last-child{border-bottom:none;}
-  .sleep-detail .key{color:var(--muted);}
-  .sleep-detail .val{font-family:'Share Tech Mono',monospace;color:var(--text);font-weight:500;}
-  .emergency-section{padding:20px;}
-  .em-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
-  .em-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
-  .em-card h3{color:var(--warn);font-size:13px;margin-bottom:10px;}
-  .em-card p{font-size:12px;color:#94a3b8;line-height:1.6;}
-  .em-highlight{background:rgba(255,59,59,0.08);border:1px solid var(--danger);border-radius:8px;padding:10px;margin-top:8px;font-size:12px;color:var(--text);}
-  .mobile-bottom-nav{display:none;}
-  .tab-content{display:none;}
-  .tab-content.active{display:block;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-  @media(max-width:900px){
-    .header{padding:10px 14px;} .header-stats{display:none;} .title-text h1{font-size:16px;} .logo{width:34px;height:34px;font-size:16px;}
-    .tracker-bar{padding:7px 12px;gap:10px;} .btn{padding:5px 10px;font-size:11px;}
-    .main{display:flex;flex-direction:column;height:auto;min-height:0;}
-    #map{width:100%;height:200px;flex-shrink:0;border-right:none;}
-    .progress-panel{display:flex;flex-direction:row;gap:10px;overflow-x:auto;overflow-y:hidden;padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0;max-height:none;height:auto;}
-    .progress-panel>*{flex-shrink:0;} .panel-title{display:none;} .time-budget{min-width:160px;margin-bottom:0;padding:10px 12px;} .next-cp-card{min-width:220px;margin-bottom:0;} .time-remaining .big{font-size:22px;}
-    .bottom-section{flex:1;height:auto;min-height:400px;overflow-y:visible;padding-bottom:56px;}
-    .tabs{display:none;}
-    .mobile-bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#0d1624;border-top:1px solid var(--border);z-index:2000;height:56px;}
-    .mob-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:500;border-top:2px solid transparent;transition:all 0.15s;padding:6px 2px 4px;-webkit-tap-highlight-color:transparent;white-space:nowrap;overflow:hidden;}
-    .mob-tab .mob-icon{font-size:20px;line-height:1;}
-    .mob-tab.active{color:var(--accent);border-top-color:var(--accent);background:rgba(0,212,255,0.06);}
-    .table-wrap{padding:8px;}
-    table,thead,tbody,th,td,tr{display:block;} thead{display:none;}
-    tr{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;padding:12px;position:relative;}
-    tr.row-sleep{border-left:3px solid var(--sleep);} tr.row-finish{border-left:3px solid var(--finish);}
-    td{padding:3px 0;border:none;font-size:13px;} td:first-child{position:absolute;top:12px;right:12px;color:var(--muted);font-size:11px;}
-    .strategy-grid{grid-template-columns:1fr;padding:10px;gap:10px;}
-    .food-grid{grid-template-columns:1fr;padding:10px;gap:10px;}
-    .sleep-cards{grid-template-columns:1fr;padding:10px;gap:10px;}
-    .em-grid{grid-template-columns:1fr;} .emergency-section{padding:10px;}
-  }
-  ::-webkit-scrollbar{width:5px;height:5px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+:root{--bg:#0a0e1a;--card:#111827;--card2:#1a2236;--border:#1e3a5f;--accent:#00d4ff;--accent2:#ff6b35;--accent3:#39ff14;--warn:#ffd700;--danger:#ff3b3b;--sleep:#a855f7;--text:#e2e8f0;--muted:#64748b;--finish:#00ff88;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.header{background:linear-gradient(135deg,#0a0e1a 0%,#0d1b3e 50%,#0a0e1a 100%);border-bottom:1px solid var(--border);padding:16px 20px;position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.header-title{display:flex;align-items:center;gap:12px;}
+.logo{width:42px;height:42px;background:conic-gradient(var(--accent),var(--accent2),var(--accent3),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;animation:spin 8s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.title-text h1{font-size:20px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;}
+.title-text p{font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:2px;}
+.header-stats{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+.stat-pill{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;font-family:'Share Tech Mono',monospace;display:flex;align-items:center;gap:6px;}
+.stat-pill .label{color:var(--muted);} .stat-pill .val{color:var(--accent);font-weight:700;}
+.tracker-bar{background:linear-gradient(90deg,#0d1b3e,#111827);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.tracker-label{font-size:11px;color:var(--accent);font-family:'Share Tech Mono',monospace;letter-spacing:1px;}
+.gps-dot{width:8px;height:8px;border-radius:50%;background:var(--danger);animation:blink 1s infinite;}
+.gps-dot.active{background:var(--accent3);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.btn{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:'Noto Sans TC',sans-serif;font-size:12px;font-weight:500;transition:all 0.2s;}
+.btn-primary{background:var(--accent);color:#000;} .btn-primary:hover{background:#00b8e0;}
+.btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--border);} .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.main{display:grid;grid-template-columns:1fr 420px;grid-template-rows:420px auto;gap:0;height:calc(100vh - 100px);}
+#map{grid-column:1;grid-row:1;width:100%;height:100%;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+.progress-panel{grid-column:2;grid-row:1;background:var(--card);border-bottom:1px solid var(--border);overflow-y:auto;padding:16px;}
+.panel-title{font-size:11px;letter-spacing:2px;color:var(--accent);font-family:'Share Tech Mono',monospace;margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:8px;}
+.time-budget{background:var(--card2);border-radius:10px;padding:14px;margin-bottom:14px;border:1px solid var(--border);}
+.budget-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;align-items:center;}
+.budget-label{color:var(--muted);font-size:11px;} .budget-val{font-family:'Share Tech Mono',monospace;font-weight:700;}
+.progress-bar-wrap{background:#1a2236;border-radius:4px;height:8px;overflow:hidden;margin:4px 0 8px;}
+.progress-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s ease;}
+.next-cp-card{background:linear-gradient(135deg,#0d1b3e,#1a2236);border:1px solid var(--accent);border-radius:10px;padding:14px;margin-bottom:14px;}
+.next-cp-card .cp-name{font-weight:700;font-size:15px;color:var(--accent);margin-bottom:4px;}
+.next-cp-card .cp-dist{font-size:12px;color:var(--muted);}
+.cp-times{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.cp-time-box{background:var(--bg);border-radius:6px;padding:8px;text-align:center;}
+.cp-time-box .t-label{font-size:10px;color:var(--muted);}
+.cp-time-box .t-val{font-family:'Share Tech Mono',monospace;font-size:16px;font-weight:700;color:var(--accent3);}
+.bottom-section{grid-column:1/3;grid-row:2;overflow-y:auto;background:var(--bg);}
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0;z-index:10;}
+.tab{padding:12px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;color:var(--muted);font-weight:500;}
+.tab:hover{color:var(--text);} .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.table-wrap{overflow-x:auto;padding:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:800px;}
+th{background:var(--card2);color:var(--accent);padding:10px 12px;text-align:left;font-size:11px;letter-spacing:1px;font-family:'Share Tech Mono',monospace;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5;}
+td{padding:9px 12px;border-bottom:1px solid rgba(30,58,95,0.4);vertical-align:middle;}
+tr:hover td{background:rgba(0,212,255,0.04);}
+.row-sleep td{background:rgba(168,85,247,0.08)!important;border-left:3px solid var(--sleep);}
+.row-photo td{background:rgba(255,215,0,0.05)!important;}
+.row-finish td{background:rgba(0,255,136,0.06)!important;border-left:3px solid var(--finish);}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:0.5px;}
+.badge-sleep{background:rgba(168,85,247,0.2);color:var(--sleep);border:1px solid var(--sleep);}
+.badge-supply{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid var(--accent);}
+.badge-photo{background:rgba(255,215,0,0.1);color:var(--warn);border:1px solid var(--warn);}
+.badge-finish{background:rgba(0,255,136,0.1);color:var(--finish);border:1px solid var(--finish);}
+.badge-start{background:rgba(255,107,53,0.1);color:var(--accent2);border:1px solid var(--accent2);}
+.time-mono{font-family:'Share Tech Mono',monospace;}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap;}
+.nav-link{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;text-decoration:none;font-weight:500;transition:all 0.15s;}
+.nav-google{background:rgba(66,133,244,0.15);color:#4285f4;border:1px solid rgba(66,133,244,0.3);}
+.nav-apple{background:rgba(255,149,0,0.15);color:#ff9500;border:1px solid rgba(255,149,0,0.3);}
+.nav-naver{background:rgba(3,199,90,0.15);color:#03c75a;border:1px solid rgba(3,199,90,0.3);}
+.strategy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:20px;}
+.strategy-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.strategy-card h3{font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.strategy-card ul{list-style:none;}
+.strategy-card li{font-size:12px;color:#94a3b8;padding:5px 0;border-bottom:1px solid rgba(30,58,95,0.3);display:flex;align-items:flex-start;gap:6px;}
+.strategy-card li:last-child{border-bottom:none;}
+.food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;padding:20px;}
+.food-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.food-header{background:linear-gradient(90deg,var(--accent2),#ff9052);padding:10px 14px;font-weight:700;font-size:14px;color:#fff;}
+.food-body{padding:12px;}
+.food-tag{display:inline-block;background:rgba(255,107,53,0.1);color:var(--accent2);font-size:10px;padding:2px 8px;border-radius:10px;margin-top:6px;}
+.sleep-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding:20px;}
+.sleep-card{background:var(--card);border:1px solid var(--sleep);border-radius:10px;padding:18px;}
+.sleep-card h3{color:var(--sleep);margin-bottom:12px;font-size:15px;}
+.sleep-detail{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(168,85,247,0.15);}
+.sleep-detail:last-child{border-bottom:none;}
+.sleep-detail .key{color:var(--muted);}
+.sleep-detail .val{font-family:'Share Tech Mono',monospace;color:var(--text);font-weight:500;}
+.emergency-section{padding:20px;}
+.em-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.em-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.em-card h3{color:var(--warn);font-size:13px;margin-bottom:10px;}
+.em-card p{font-size:12px;color:#94a3b8;line-height:1.6;}
+.em-highlight{background:rgba(255,59,59,0.08);border:1px solid var(--danger);border-radius:8px;padding:10px;margin-top:8px;font-size:12px;color:var(--text);}
+.mobile-bottom-nav{display:none;}
+.tab-content{display:none;} .tab-content.active{display:block;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@media(max-width:900px){
+  .header{padding:10px 14px;} .header-stats{display:none;} .title-text h1{font-size:16px;} .logo{width:34px;height:34px;font-size:16px;}
+  .tracker-bar{padding:7px 12px;gap:10px;} .btn{padding:5px 10px;font-size:11px;}
+  .main{display:flex;flex-direction:column;height:auto;min-height:0;}
+  #map{width:100%;height:200px;flex-shrink:0;border-right:none;}
+  .progress-panel{display:flex;flex-direction:row;gap:10px;overflow-x:auto;overflow-y:hidden;padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0;max-height:none;height:auto;}
+  .progress-panel>*{flex-shrink:0;} .panel-title{display:none;} .time-budget{min-width:160px;margin-bottom:0;padding:10px 12px;} .next-cp-card{min-width:220px;margin-bottom:0;}
+  .bottom-section{flex:1;height:auto;min-height:400px;overflow-y:visible;padding-bottom:56px;}
+  .tabs{display:none;}
+  .mobile-bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#0d1624;border-top:1px solid var(--border);z-index:2000;height:56px;}
+  .mob-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:500;border-top:2px solid transparent;transition:all 0.15s;padding:6px 2px 4px;-webkit-tap-highlight-color:transparent;white-space:nowrap;overflow:hidden;}
+  .mob-tab .mob-icon{font-size:20px;line-height:1;}
+  .mob-tab.active{color:var(--accent);border-top-color:var(--accent);background:rgba(0,212,255,0.06);}
+  .table-wrap{padding:8px;}
+  table,thead,tbody,th,td,tr{display:block;} thead{display:none;}
+  tr{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;padding:12px;position:relative;}
+  tr.row-sleep{border-left:3px solid var(--sleep);} tr.row-finish{border-left:3px solid var(--finish);}
+  td{padding:3px 0;border:none;font-size:13px;} td:first-child{position:absolute;top:12px;right:12px;color:var(--muted);font-size:11px;}
+  .strategy-grid,.food-grid,.sleep-cards{grid-template-columns:1fr;padding:10px;gap:10px;}
+  .em-grid{grid-template-columns:1fr;} .emergency-section{padding:10px;}
+}
+::-webkit-scrollbar{width:5px;height:5px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 </style>
 </head>
 <body>
@@ -140,14 +124,14 @@
     <div class="logo">🐬</div>
     <div class="title-text">
       <h1>海豚環島 賽事指揮官</h1>
-      <p>1548 KM · 7天 · 樂生療養院出發 · 06:00 / 天</p>
+      <p>1548 KM · 7天 · 樂生出發 · 每天 06:00</p>
     </div>
   </div>
   <div class="header-stats">
     <div class="stat-pill"><span class="label">總距離</span><span class="val">1,548 km</span></div>
-    <div class="stat-pill"><span class="label">總爬升</span><span class="val">14,907 m</span></div>
-    <div class="stat-pill"><span class="label">天數</span><span class="val">7天</span></div>
-    <div class="stat-pill"><span class="label">均速</span><span class="val">~20 km/h</span></div>
+    <div class="stat-pill"><span class="label">總爬升</span><span class="val">14,922 m</span></div>
+    <div class="stat-pill"><span class="label">純騎</span><span class="val">69.9 h</span></div>
+    <div class="stat-pill"><span class="label">天數</span><span class="val">7 天</span></div>
   </div>
 </div>
 <div class="tracker-bar">
@@ -172,14 +156,14 @@
       <div class="budget-row"><span class="budget-label">剩餘距離</span><span class="budget-val" id="remainKm" style="color:var(--accent2)">1,548 km</span></div>
     </div>
     <div class="time-budget">
-      <div class="panel-title" style="margin-bottom:8px">📅 日程總覽</div>
-      <div class="budget-row"><span class="budget-label">D1 (0→217km)</span><span class="budget-val time-mono" style="color:var(--accent3)">19:34</span></div>
-      <div class="budget-row"><span class="budget-label">D2 (217→490km)</span><span class="budget-val time-mono" style="color:var(--accent3)">20:19</span></div>
-      <div class="budget-row"><span class="budget-label">D3 (490→691km)</span><span class="budget-val time-mono" style="color:var(--accent3)">17:25</span></div>
-      <div class="budget-row"><span class="budget-label">D4 (691→881km)</span><span class="budget-val time-mono" style="color:var(--accent3)">16:41</span></div>
-      <div class="budget-row"><span class="budget-label">D5 (881→1046km)</span><span class="budget-val time-mono" style="color:var(--accent3)">15:50</span></div>
-      <div class="budget-row"><span class="budget-label">D6 (1046→1305km)</span><span class="budget-val time-mono" style="color:var(--accent3)">20:14</span></div>
-      <div class="budget-row"><span class="budget-label">D7 (1305→1548km)</span><span class="budget-val time-mono" style="color:var(--accent3)">19:22</span></div>
+      <div class="panel-title" style="margin-bottom:8px">📅 每日目標</div>
+      <div class="budget-row"><span class="budget-label">D1 0→217km</span><span class="budget-val time-mono" style="color:var(--accent3)">19:34</span></div>
+      <div class="budget-row"><span class="budget-label">D2 217→490km</span><span class="budget-val time-mono" style="color:var(--accent3)">20:19</span></div>
+      <div class="budget-row"><span class="budget-label">D3 490→693km</span><span class="budget-val time-mono" style="color:var(--accent3)">17:30</span></div>
+      <div class="budget-row"><span class="budget-label">D4 693→881km</span><span class="budget-val time-mono" style="color:var(--accent3)">16:36</span></div>
+      <div class="budget-row"><span class="budget-label">D5 881→1046km</span><span class="budget-val time-mono" style="color:var(--accent3)">15:50</span></div>
+      <div class="budget-row"><span class="budget-label">D6 1046→1305km</span><span class="budget-val time-mono" style="color:var(--accent3)">20:14</span></div>
+      <div class="budget-row"><span class="budget-label">D7 1305→1548km</span><span class="budget-val time-mono" style="color:var(--accent3)">19:22</span></div>
     </div>
     <div class="next-cp-card" id="nextCpCard">
       <div class="cp-name" id="nextCpName">下一站：樂生療養院</div>
@@ -224,81 +208,89 @@
 const TOTAL_KM = 1548;
 const ROUTE = [[121.44725,24.99390],[121.37605,25.03840],[121.30571,25.06153],[121.25046,25.11004],[121.21149,25.04773],[121.21954,24.97169],[121.26512,24.90367],[121.29052,24.84082],[121.35354,24.82484],[121.35489,24.76855],[121.35164,24.72402],[121.38384,24.67818],[121.42772,24.65085],[121.47602,24.64600],[121.48797,24.61201],[121.50384,24.58801],[121.45499,24.53846],[121.41156,24.46826],[121.36599,24.43055],[121.36889,24.40012],[121.32666,24.35864],[121.28896,24.31030],[121.25853,24.26198],[121.24351,24.22932],[121.22088,24.19209],[121.21061,24.16353],[121.18609,24.14409],[121.17235,24.11014],[121.15216,24.06100],[121.12802,24.01652],[121.06421,24.00418],[120.97842,23.97423],[120.93117,24.03008],[120.90628,24.05796],[120.89152,24.11074],[120.87715,24.15365],[120.84030,24.18698],[120.81103,24.26361],[120.72878,24.25153],[120.70002,24.17773],[120.68199,24.10179],[120.69615,24.01969],[120.68716,23.93492],[120.69550,23.85574],[120.64969,23.79486],[120.61130,23.73024],[120.56553,23.66994],[120.53437,23.59919],[120.49586,23.56263],[120.49047,23.50394],[120.47193,23.45414],[120.43223,23.39199],[120.40007,23.31014],[120.35307,23.23955],[120.33986,23.15862],[120.32104,23.07816],[120.30852,23.00405],[120.34475,22.92564],[120.37578,22.86236],[120.41998,22.81206],[120.45226,22.77910],[120.51989,22.74524],[120.57939,22.69851],[120.64325,22.71788],[120.62632,22.77878],[120.64016,22.86017],[120.65048,22.94389],[120.66537,23.01561],[120.68215,23.09546],[120.73862,23.13817],[120.79517,23.19746],[120.81717,23.24671],[120.77963,23.17695],[120.71468,23.12725],[120.67186,23.07166],[120.61888,23.07777],[120.57630,23.05568],[120.57972,23.00560],[120.56148,23.02421],[120.59085,23.06417],[120.62752,23.06708],[120.66776,23.04567],[120.65125,22.97454],[120.64739,22.88680],[120.62390,22.80883],[120.63751,22.73756],[120.63352,22.67341],[120.61072,22.59256],[120.63103,22.51847],[120.60934,22.45129],[120.60749,22.36810],[120.64437,22.28947],[120.68516,22.21097],[120.75432,22.20929],[120.82294,22.24517],[120.86705,22.27652],[120.89914,22.34627],[120.93394,22.42875],[120.96118,22.51164],[120.99370,22.59139],[121.03589,22.67028],[121.05396,22.75213],[121.08923,22.81375],[121.09367,22.88892],[121.12856,22.95344],[121.16064,23.03888],[121.20708,23.11335],[121.13886,23.13231],[121.06906,23.15188],[121.02975,23.17879],[121.02228,23.19411],[121.00593,23.23626],[120.99026,23.24590],[121.03112,23.20390],[121.03995,23.18097],[121.05063,23.15984],[121.12326,23.13529],[121.19964,23.13316],[121.26306,23.19148],[121.30592,23.26910],[121.31044,23.31893],[121.25312,23.31661],[121.26159,23.29649],[121.33664,23.32669],[121.36654,23.40997],[121.40317,23.48711],[121.39351,23.55479],[121.43551,23.62496],[121.48560,23.68960],[121.49843,23.75158],[121.52872,23.81842],[121.57323,23.88709],[121.60731,23.94639],[121.60910,24.02060],[121.62131,24.10714],[121.65633,24.17719],[121.71133,24.24149],[121.74752,24.30981],[121.77880,24.36708],[121.78531,24.43400],[121.82267,24.47445],[121.84913,24.52507],[121.86072,24.58463],[121.79637,24.63223],[121.77262,24.71193],[121.76365,24.79609],[121.82499,24.85710],[121.88402,24.92397],[121.94850,24.97988],[121.98828,25.01608],[121.90827,25.01664],[121.82348,25.02575],[121.75416,25.02774],[121.69908,25.00923],[121.61857,25.00393],[121.53598,24.98742]];
 const SCHEDULE = [
-  {day:'D1', km:0, name:'🚩 樂生療養院（出發）', eta:'06/01 06:00', type:'start', lat:25.01918, lon:121.40829, climb:0, climbColor:'var(--muted)', note:'台灣海豚環島出發點'},
-  {day:'D1', km:25, name:'7-ELEVEN 海湖門市', eta:'06/01 07:15', type:'supply', lat:25.1117, lon:121.25457, climb:265, climbColor:'var(--muted)', note:'三峽北橫入口補給'},
-  {day:'D1', km:76, name:'萊爾富 復興旺詮店', eta:'06/01 09:49', type:'supply', lat:24.82445, lon:121.35461, climb:378, climbColor:'var(--accent2)', note:'復興鄉，進北橫山區'},
-  {day:'D1', km:136, name:'台7線77公里', eta:'06/01 13:18', type:'photo', lat:24.61138, lon:121.48666, climb:1414, climbColor:'var(--warn)', note:'📸 北橫高點景觀'},
-  {day:'D1', km:173, name:'全家 大同鑫南山店', eta:'06/01 15:09', type:'supply', lat:24.44065, lon:121.38036, climb:478, climbColor:'var(--accent2)', note:'思源啞口前最後補給'},
-  {day:'D1→2', km:217, name:'🛌 梨山（D1住宿）', eta:'06/01 17:47', type:'sleep', lat:24.25752, lon:121.26007, climb:1206, climbColor:'var(--warn)', note:'梨山1960m，需預訂', hotel:'梨山民宿', depart:'06:00 出發'},
-  {day:'D2', km:251, name:'力行社區發展協會', eta:'06/02 07:56', type:'supply', lat:24.14605, lon:121.19097, climb:910, climbColor:'var(--accent2)', note:'力行道路起點，碎石路'},
-  {day:'D2', km:304, name:'埔里補給', eta:'06/02 10:15', type:'supply', lat:23.97412, lon:120.98029, climb:457, climbColor:'var(--accent2)', note:'霧社下山後'},
-  {day:'D2', km:367, name:'7-ELEVEN 新石岡門市', eta:'06/02 13:16', type:'supply', lat:24.27444, lon:120.77701, climb:832, climbColor:'var(--accent2)', note:'台中石岡'},
-  {day:'D2', km:427, name:'全家 名間金交流店', eta:'06/02 15:53', type:'supply', lat:23.84678, lon:120.69737, climb:68, climbColor:'var(--muted)', note:'南投名間'},
-  {day:'D2', km:485, name:'OK 嘉義崇仁門市', eta:'06/02 18:35', type:'supply', lat:23.47821, lon:120.48335, climb:233, climbColor:'var(--muted)', note:'嘉義市區補給'},
-  {day:'D2→3', km:490, name:'🛌 洄嘉居行旅（D2住宿）', eta:'06/02 18:43', type:'sleep', lat:23.46821, lon:120.44372, climb:0, climbColor:'var(--muted)', note:'嘉義市區旅館', hotel:'洄嘉居行旅', depart:'06:00 出發'},
-  {day:'D3', km:615, name:'7-ELEVEN 水門門市', eta:'06/03 11:46', type:'supply', lat:22.7053, lon:120.63975, climb:458, climbColor:'var(--accent2)', note:'屏東水門補給'},
-  {day:'D3', km:685, name:'7-ELEVEN 荖濃門市', eta:'06/03 15:12', type:'supply', lat:23.07276, lon:120.67289, climb:494, climbColor:'var(--accent2)', note:'荖濃補給'},
-  {day:'D3→4', km:691, name:'🛌 荖濃民宿（D3住宿）', eta:'06/03 15:35', type:'sleep', lat:23.1234, lon:120.7105, climb:131, climbColor:'var(--muted)', note:'荖濃溪旁民宿', hotel:'荖濃民宿', depart:'06:00 出發'},
-  {day:'D4', km:759, name:'海豚眼睛', eta:'06/04 09:10', type:'photo', lat:23.00427, lon:120.60107, climb:590, climbColor:'var(--accent2)', note:'📸 海豚眼睛必拍'},
-  {day:'D4', km:838, name:'7-ELEVEN 水門門市', eta:'06/04 12:53', type:'supply', lat:22.7053, lon:120.63975, climb:723, climbColor:'var(--accent2)', note:'返回水門補給'},
-  {day:'D4→5', km:881, name:'🛌 枋寮枋居（D4住宿）', eta:'06/04 14:49', type:'sleep', lat:22.38466, lon:120.59817, climb:81, climbColor:'var(--muted)', note:'枋寮濱海背包客棧', hotel:'枋寮枋居背包客棧', depart:'06:00 出發'},
-  {day:'D5', km:904, name:'台1線終點', eta:'06/05 07:05', type:'photo', lat:22.19478, lon:120.69194, climb:95, climbColor:'var(--muted)', note:'📸 台1線最南端'},
-  {day:'D5', km:935, name:'7-ELEVEN 達武門市', eta:'06/05 08:30', type:'supply', lat:22.2948, lon:120.88672, climb:84, climbColor:'var(--muted)', note:'南迴台東補給'},
-  {day:'D5', km:972, name:'7-ELEVEN 香蘭門市', eta:'06/05 10:18', type:'supply', lat:22.59951, lon:120.9965, climb:413, climbColor:'var(--accent2)', note:'台東香蘭'},
-  {day:'D5', km:1019, name:'7-ELEVEN 新鹿野門市', eta:'06/05 12:32', type:'supply', lat:22.91052, lon:121.13621, climb:278, climbColor:'var(--muted)', note:'台東鹿野'},
-  {day:'D5→6', km:1046, name:'🛌 池上米鄉（D5住宿）', eta:'06/05 13:53', type:'sleep', lat:23.12075, lon:121.21328, climb:335, climbColor:'var(--accent2)', note:'池上米鄉，伯朗大道旁', hotel:'池上民宿', depart:'06:00 出發'},
-  {day:'D6', km:1102, name:'南橫向陽管制站', eta:'06/06 09:12', type:'photo', lat:23.24744, lon:120.98585, climb:934, climbColor:'var(--accent2)', note:'📸 向陽管制站打卡（不穿越）'},
-  {day:'D6', km:1183, name:'7-ELEVEN 樂合門市', eta:'06/06 12:51', type:'supply', lat:23.32083, lon:121.33631, climb:1170, climbColor:'var(--warn)', note:'花蓮樂合補給'},
-  {day:'D6', km:1200, name:'八通關東段登山口', eta:'06/06 13:37', type:'photo', lat:23.32894, lon:121.23487, climb:4, climbColor:'var(--muted)', note:'📸 八通關東段登山口'},
-  {day:'D6', km:1233, name:'玉里春日派出所', eta:'06/06 15:12', type:'supply', lat:23.45508, lon:121.39639, climb:317, climbColor:'var(--accent2)', note:'花蓮玉里'},
-  {day:'D6', km:1287, name:'米棧休息商店', eta:'06/06 17:45', type:'supply', lat:23.81828, lon:121.52882, climb:174, climbColor:'var(--muted)', note:'米棧老街補給'},
-  {day:'D6→7', km:1305, name:'🛌 煙波大飯店花蓮（D6住宿）', eta:'06/06 18:35', type:'sleep', lat:23.98674, lon:121.62224, climb:72, climbColor:'var(--muted)', note:'花蓮市海景飯店', hotel:'煙波大飯店花蓮館', depart:'06:00 出發'},
-  {day:'D7', km:1351, name:'7-ELEVEN 泰雅門市', eta:'06/07 08:01', type:'supply', lat:24.30926, lon:121.7476, climb:106, climbColor:'var(--muted)', note:'宜蘭南澳'},
-  {day:'D7', km:1415, name:'全家 冬山永興店', eta:'06/07 11:24', type:'supply', lat:24.65385, lon:121.78074, climb:1061, climbColor:'var(--warn)', note:'宜蘭冬山'},
-  {day:'D7', km:1449, name:'7-ELEVEN 新梗枋門市', eta:'06/07 13:04', type:'supply', lat:24.90588, lon:121.87049, climb:347, climbColor:'var(--accent2)', note:'宜蘭礁溪'},
-  {day:'D7', km:1499, name:'全家 平溪十分店', eta:'06/07 15:19', type:'supply', lat:25.0447, lon:121.77938, climb:41, climbColor:'var(--muted)', note:'新北平溪'},
-  {day:'D7', km:1530, name:'7-ELEVEN 新安康門市', eta:'06/07 16:53', type:'supply', lat:24.98859, lon:121.55993, climb:284, climbColor:'var(--muted)', note:'新北汐止'},
-  {day:'D7', km:1548, name:'🏁 樂生療養院（終點）', eta:'06/07 17:40', type:'finish', lat:25.01918, lon:121.40829, climb:88, climbColor:'var(--muted)', note:'🎉 完賽！海豚環島完成'}
+  {day:'D1',km:0,name:'樂生療養院停車場',lat:25.0191799,lon:121.4082917,type:'start',climb:0,climbColor:'var(--muted)',eta:'06/01 06:00',note:'海豚環島起點，新莊樂生療養院停車場'},
+  {day:'D1',km:25,name:'7',lat:25.111698,lon:121.254566,type:'supply',climb:265,climbColor:'var(--muted)',eta:'06/01 07:15',note:'三峽進北橫前最後市區補給'},
+  {day:'D1',km:50,name:'7',lat:24.9354194,lon:121.2340135,type:'supply',climb:93,climbColor:'var(--muted)',eta:'06/01 08:26',note:'成龍，台7甲沿途補給'},
+  {day:'D1',km:76,name:'萊爾富 復興旺詮店',lat:24.824448,lon:121.3546076,type:'supply',climb:265,climbColor:'var(--muted)',eta:'06/01 09:49',note:'復興鄉，進北橫山區'},
+  {day:'D1',km:105,name:'巴陵大橋假日小吃',lat:24.6826554,lon:121.3797023,type:'supply',climb:605,climbColor:'var(--accent2)',eta:'06/01 11:30',note:'巴陵大橋，北橫深山小吃'},
+  {day:'D1',km:136,name:'777|台7線77公里處',lat:24.611377,lon:121.4866561,type:'photo',climb:758,climbColor:'var(--accent2)',eta:'06/01 13:18',note:'📸 台7線77K高點，北橫景觀打卡'},
+  {day:'D1',km:157,name:'留茂安活動中心',lat:24.5318995,lon:121.4516551,type:'supply',climb:95,climbColor:'var(--muted)',eta:'06/01 14:08',note:'留茂安，思源啞口前'},
+  {day:'D1',km:173,name:'全家 大同鑫南山店',lat:24.4406494,lon:121.3803567,type:'supply',climb:353,climbColor:'var(--accent2)',eta:'06/01 15:09',note:'南山，思源啞口後下坡'},
+  {day:'D1',km:205,name:'7',lat:24.3117495,lon:121.2914795,type:'supply',climb:1074,climbColor:'var(--warn)',eta:'06/01 17:17',note:'環山部落，梨山前補給'},
+  {day:'D2',km:219,name:'全家 和平梨山店',lat:24.253919,lon:121.2522838,type:'supply',climb:122,climbColor:'var(--muted)',eta:'06/02 06:09',note:'梨山，全家便利商店'},
+  {day:'D2',km:251,name:'力行社區發展協會',lat:24.146048,lon:121.190974,type:'supply',climb:799,climbColor:'var(--accent2)',eta:'06/02 07:56',note:'力行產業道路起點，⚠️碎石陡坡開始'},
+  {day:'D2',km:282,name:'7',lat:24.0227081,lon:121.1324653,type:'supply',climb:441,climbColor:'var(--accent2)',eta:'06/02 09:32',note:'好蒔光，霧社附近補給'},
+  {day:'D2',km:328,name:'7',lat:24.0684075,lon:120.8755783,type:'supply',climb:244,climbColor:'var(--muted)',eta:'06/02 11:20',note:'水長流，台14線補給'},
+  {day:'D2',km:367,name:'7',lat:24.2744423,lon:120.7770108,type:'supply',climb:589,climbColor:'var(--accent2)',eta:'06/02 13:16',note:'石岡，台中地區補給'},
+  {day:'D2',km:400,name:'7',lat:24.0429074,lon:120.6916963,type:'supply',climb:0,climbColor:'var(--muted)',eta:'06/02 14:34',note:'新亞大，南投方向'},
+  {day:'D2',km:427,name:'全家 名間金交流店',lat:23.8467799,lon:120.6973682,type:'supply',climb:68,climbColor:'var(--muted)',eta:'06/02 15:53',note:'名間，南投平原補給'},
+  {day:'D2',km:453,name:'7',lat:23.6829055,lon:120.5697485,type:'supply',climb:94,climbColor:'var(--muted)',eta:'06/02 17:08',note:'廣濟，嘉義縣境'},
+  {day:'D2',km:485,name:'OK 嘉義崇仁門市',lat:23.4782126,lon:120.4833549,type:'supply',climb:128,climbColor:'var(--muted)',eta:'06/02 18:35',note:'嘉義市區最後補給站'},
+  {day:'D2→3',km:490,name:'洄嘉居行旅',lat:23.4682149,lon:120.4437235,type:'sleep',climb:0,climbColor:'var(--muted)',eta:'06/02 18:43',note:'D2住宿｜嘉義市區旅館', hotel:'洄嘉居行旅', depart:'06:00 出發'},
+  {day:'D3',km:523,name:'7',lat:23.2121958,lon:120.3509283,type:'supply',climb:87,climbColor:'var(--muted)',eta:'06/03 07:27',note:'烏山頭，台南山區'},
+  {day:'D3',km:555,name:'全家 關廟南雄店',lat:22.9610841,lon:120.3278607,type:'supply',climb:16,climbColor:'var(--muted)',eta:'06/03 08:54',note:'關廟，高雄平原入口'},
+  {day:'D3',km:615,name:'7',lat:22.7053027,lon:120.6397467,type:'supply',climb:355,climbColor:'var(--accent2)',eta:'06/03 11:46',note:'水門，屏東三地門7-11，南橫西口補給'},
+  {day:'D3',km:664,name:'7',lat:23.0727605,lon:120.6728886,type:'supply',climb:238,climbColor:'var(--muted)',eta:'06/03 14:03',note:'荖濃，南橫西段補給站'},
+  {day:'D3',km:681,name:'7',lat:23.1595607,lon:120.765563,type:'supply',climb:144,climbColor:'var(--muted)',eta:'06/03 15:02',note:'桃源，南橫深山補給'},
+  {day:'D3→4',km:693,name:'南橫•儒艾民宿',lat:23.239512,lon:120.8120256,type:'sleep',climb:176,climbColor:'var(--muted)',eta:'06/03 15:40',note:'D3住宿｜南橫西側儒艾民宿，梅山口打卡後住此', hotel:'南橫•儒艾民宿', depart:'06:00 出發'},
+  {day:'D4',km:696,name:'梅山遊客中心',lat:23.2633615,lon:120.8259715,type:'photo',climb:0,climbColor:'var(--muted)',eta:'06/04 06:06',note:'📸 梅山遊客中心，南橫管制站打卡（不過埡口）'},
+  {day:'D4',km:726,name:'7',lat:23.0727605,lon:120.6728886,type:'supply',climb:269,climbColor:'var(--muted)',eta:'06/04 07:32',note:'荖濃，返回補給'},
+  {day:'D4',km:759,name:'海豚眼睛',lat:23.004268,lon:120.601069,type:'photo',climb:296,climbColor:'var(--muted)',eta:'06/04 09:04',note:'📸 海豚眼睛景觀點，必拍打卡'},
+  {day:'D4',km:791,name:'7',lat:23.0727605,lon:120.6728886,type:'supply',climb:199,climbColor:'var(--muted)',eta:'06/04 10:33',note:'荖濃，再次補給'},
+  {day:'D4',km:840,name:'7',lat:22.7053027,lon:120.6397467,type:'supply',climb:422,climbColor:'var(--accent2)',eta:'06/04 12:52',note:'水門，台28往南迴前補給'},
+  {day:'D4→5',km:881,name:'枋寮枋居背包客棧',lat:22.3846645,lon:120.5981674,type:'sleep',climb:81,climbColor:'var(--muted)',eta:'06/04 14:43',note:'D4住宿｜枋寮枋居背包客棧，台1/南迴交叉口', hotel:'枋寮枋居背包客棧', depart:'06:00 出發'},
+  {day:'D5',km:883,name:'7',lat:22.3681367,lon:120.6078703,type:'supply',climb:0,climbColor:'var(--muted)',eta:'06/05 06:06',note:'隆山7-11，枋寮鄰近補給'},
+  {day:'D5',km:906,name:'7',lat:22.1951622,lon:120.6914535,type:'supply',climb:64,climbColor:'var(--muted)',eta:'06/05 07:10',note:'楓港，南迴起點'},
+  {day:'D5',km:935,name:'7',lat:22.2947978,lon:120.8867233,type:'supply',climb:84,climbColor:'var(--muted)',eta:'06/05 08:30',note:'達武，南迴台東段補給'},
+  {day:'D5',km:972,name:'7',lat:22.5995061,lon:120.9965045,type:'supply',climb:413,climbColor:'var(--accent2)',eta:'06/05 10:18',note:'香蘭，台東海岸'},
+  {day:'D5',km:996,name:'7',lat:22.772756,lon:121.0789167,type:'supply',climb:124,climbColor:'var(--muted)',eta:'06/05 11:24',note:'祺淯，台東中段'},
+  {day:'D5',km:1019,name:'7',lat:22.9105214,lon:121.1362148,type:'supply',climb:154,climbColor:'var(--muted)',eta:'06/05 12:32',note:'新鹿野，台東北段補給'},
+  {day:'D5→6',km:1046,name:'池上懶羊羊民宿',lat:23.1203162,lon:121.2169836,type:'sleep',climb:335,climbColor:'var(--accent2)',eta:'06/05 13:53',note:'D5住宿｜池上懶羊羊民宿，米鄉必住', hotel:'池上懶羊羊民宿', depart:'06:00 出發'},
+  {day:'D6',km:1102,name:'南橫向陽管制站',lat:23.2474405,lon:120.9858522,type:'photo',climb:934,climbColor:'var(--accent2)',eta:'06/06 09:12',note:'📸 南橫向陽管制站打卡（不穿越）'},
+  {day:'D6',km:1158,name:'7',lat:23.1207498,lon:121.213276,type:'supply',climb:1156,climbColor:'var(--warn)',eta:'06/06 11:57',note:'池上7-11，南橫後返程補給'},
+  {day:'D6',km:1183,name:'7',lat:23.3208305,lon:121.3363123,type:'supply',climb:14,climbColor:'var(--muted)',eta:'06/06 12:51',note:'樂合，花蓮縱谷補給'},
+  {day:'D6',km:1200,name:'八通關東段登山口',lat:23.3289391,lon:121.2348658,type:'photo',climb:4,climbColor:'var(--muted)',eta:'06/06 13:37',note:'📸 八通關東段登山口打卡'},
+  {day:'D6',km:1233,name:'玉里春日派出所',lat:23.4550784,lon:121.3963906,type:'supply',climb:317,climbColor:'var(--accent2)',eta:'06/06 15:12',note:'玉里，花蓮縱谷補給'},
+  {day:'D6',km:1287,name:'米棧休息商店',lat:23.8182785,lon:121.5288154,type:'supply',climb:174,climbColor:'var(--muted)',eta:'06/06 17:45',note:'米棧，蘇花前最後補給'},
+  {day:'D6→7',km:1305,name:'慢且洄瀾文旅1305km',lat:23.9754917,lon:121.6063613,type:'sleep',climb:72,climbColor:'var(--muted)',eta:'06/06 18:35',note:'D6住宿｜慢且洄瀾文旅，花蓮市區', hotel:'慢且洄瀾文旅1305km', depart:'06:00 出發'},
+  {day:'D7',km:1351,name:'7',lat:24.3092641,lon:121.7475989,type:'supply',climb:106,climbColor:'var(--muted)',eta:'06/07 08:01',note:'泰雅，宜蘭南澳補給'},
+  {day:'D7',km:1378,name:'7',lat:24.4650258,lon:121.8024654,type:'supply',climb:401,climbColor:'var(--accent2)',eta:'06/07 09:29',note:'南澳，宜蘭進入蘇花後'},
+  {day:'D7',km:1415,name:'全家 冬山永興店',lat:24.653847,lon:121.7807404,type:'supply',climb:639,climbColor:'var(--accent2)',eta:'06/07 11:24',note:'冬山，宜蘭縱谷補給'},
+  {day:'D7',km:1449,name:'7',lat:24.9058848,lon:121.8704864,type:'supply',climb:347,climbColor:'var(--accent2)',eta:'06/07 13:04',note:'礁溪，宜蘭北端補給'},
+  {day:'D7',km:1499,name:'全家平溪十分店',lat:25.044702,lon:121.7793819,type:'supply',climb:41,climbColor:'var(--muted)',eta:'06/07 15:19',note:'平溪十分，新北山區'},
+  {day:'D7',km:1530,name:'7',lat:24.9885859,lon:121.559929,type:'supply',climb:284,climbColor:'var(--muted)',eta:'06/07 16:53',note:'新安康，汐止新莊前'},
+  {day:'D7',km:1548,name:'樂生療養院停車場',lat:25.0191799,lon:121.4082917,type:'finish',climb:88,climbColor:'var(--muted)',eta:'06/07 17:40',note:'🏁 完賽！海豚環島完成，回到樂生療養院'}
 ];
 const SLEEPS = [
-  {n:1, hotel:'梨山民宿', km:217, eta:'06/01 17:47', depart:'06:00 出發',
-   dist:217, climb:3899, maxE:1981, rideH:11.1,
-   note:'D1→D2住宿站｜純騎11.1h，今天爬升3899m，最高1981m',
-   lat:24.25752, lon:121.26007},
-  {n:2, hotel:'洄嘉居行旅', km:490, eta:'06/02 18:43', depart:'06:00 出發',
-   dist:273, climb:2516, maxE:2530, rideH:11.8,
-   note:'D2→D3住宿站｜純騎11.8h，今天爬升2516m，最高2530m',
-   lat:23.46821, lon:120.44372},
-  {n:3, hotel:'荖濃民宿', km:691, eta:'06/03 15:35', depart:'06:00 出發',
-   dist:201, climb:1083, maxE:541, rideH:8.9,
-   note:'D3→D4住宿站｜純騎8.9h，今天爬升1083m，最高541m',
-   lat:23.1234, lon:120.7105},
-  {n:4, hotel:'枋寮枋居背包客棧', km:881, eta:'06/04 14:49', depart:'06:00 出發',
-   dist:190, climb:1394, maxE:816, rideH:8.2,
-   note:'D4→D5住宿站｜純騎8.2h，今天爬升1394m，最高816m',
-   lat:22.38466, lon:120.59817},
-  {n:5, hotel:'池上民宿', km:1046, eta:'06/05 13:53', depart:'06:00 出發',
-   dist:165, climb:1246, maxE:468, rideH:7.3,
-   note:'D5→D6住宿站｜純騎7.3h，今天爬升1246m，最高468m',
-   lat:23.12075, lon:121.21328},
-  {n:6, hotel:'煙波大飯店花蓮館', km:1305, eta:'06/06 18:35', depart:'06:00 出發',
-   dist:259, climb:2807, maxE:2310, rideH:11.7,
-   note:'D6→D7住宿站｜純騎11.7h，今天爬升2807m，最高2310m',
-   lat:23.98674, lon:121.62224}
+  {n:1,hotel:'洄嘉居行旅',km:490,eta:'06/02 18:43',depart:'06:00 出發',dist:217,climb:3899,maxE:1981,rideH:11.1,arrive:'19:34',lat:23.4682149,lon:120.4437235},
+  {n:2,hotel:'南橫•儒艾民宿',km:693,eta:'06/03 15:40',depart:'06:00 出發',dist:273,climb:2516,maxE:2530,rideH:11.8,arrive:'20:19',lat:23.239512,lon:120.8120256},
+  {n:3,hotel:'枋寮枋居背包客棧',km:881,eta:'06/04 14:43',depart:'06:00 出發',dist:203,climb:1098,maxE:556,rideH:9.0,arrive:'17:30',lat:22.3846645,lon:120.5981674},
+  {n:4,hotel:'池上懶羊羊民宿',km:1046,eta:'06/05 13:53',depart:'06:00 出發',dist:188,climb:1394,maxE:816,rideH:8.1,arrive:'16:36',lat:23.1203162,lon:121.2169836},
+  {n:5,hotel:'慢且洄瀾文旅1305km',km:1305,eta:'06/06 18:35',depart:'06:00 出發',dist:165,climb:1246,maxE:468,rideH:7.3,arrive:'15:50',lat:23.9754917,lon:121.6063613}
 ];
 
 // MAP
 const map = L.map('map',{center:[23.5,121.0],zoom:8});
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'©CartoDB',maxZoom:19}).addTo(map);
-const routeLL = ROUTE.map(c=>[c[1],c[0]]);
-L.polyline(routeLL,{color:'#00d4ff',weight:3,opacity:0.8}).addTo(map);
+L.polyline(ROUTE.map(c=>[c[1],c[0]]),{color:'#00d4ff',weight:3,opacity:0.8}).addTo(map);
 
-const cpColors={start:'#ff6b35',supply:'#00d4ff',sleep:'#a855f7',photo:'#ffd700',finish:'#00ff88'};
-const cpEmoji={start:'🏁',supply:'🏪',sleep:'🛌',photo:'📸',finish:'🎯'};
-SCHEDULE.filter(cp=>cp.type!=='supply'||cp.km%100<20).forEach(cp=>{
-  const col=cpColors[cp.type]||'#00d4ff';
-  const icon=L.divIcon({className:'',html:`<div style="background:${col};border:2px solid #fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 0 8px ${col};">${cpEmoji[cp.type]||'🏪'}</div>`,iconSize:[22,22],iconAnchor:[11,11]});
-  L.marker([cp.lat,cp.lon],{icon}).addTo(map).bindPopup(`<div style="background:#111827;color:#e2e8f0;border-radius:8px;padding:12px;min-width:200px;font-family:sans-serif;"><strong style="color:#00d4ff;font-size:14px;">${cp.name}</strong><br><span style="color:#64748b;font-size:12px;">${cp.km} km</span><br><span style="color:#39ff14;font-size:12px;">預計: ${cp.eta}</span><br>${cp.hotel?`<span style="color:#a855f7;font-size:11px;">🏨 ${cp.hotel}</span><br>`:''}<span style="color:#94a3b8;font-size:11px;">${cp.note}</span><br><div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cp.name)}@${cp.lat},${cp.lon}" target="_blank" style="background:#4285f4;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;text-decoration:none;">Google</a><a href="https://maps.apple.com/?q=${encodeURIComponent(cp.name)}&ll=${cp.lat},${cp.lon}" target="_blank" style="background:#ff9500;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;text-decoration:none;">Apple</a></div></div>`,{maxWidth:300});
+const cpCol={start:'#ff6b35',supply:'#00d4ff',sleep:'#a855f7',photo:'#ffd700',finish:'#00ff88'};
+const cpEmo={start:'🏁',supply:'🏪',sleep:'🛌',photo:'📸',finish:'🎯'};
+SCHEDULE.forEach(cp=>{
+  const col=cpCol[cp.type]||'#00d4ff';
+  if(cp.type==='supply'&&cp.km%50!==0&&![0,1548].includes(cp.km))return; // 只顯示住宿/照片/起終點和每50km補給
+  const icon=L.divIcon({className:'',html:`<div style="background:${col};border:2px solid #fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 0 8px ${col};">${cpEmo[cp.type]||'🏪'}</div>`,iconSize:[22,22],iconAnchor:[11,11]});
+  L.marker([cp.lat,cp.lon],{icon}).addTo(map).bindPopup(
+    `<div style="background:#111827;color:#e2e8f0;border-radius:8px;padding:12px;min-width:200px;font-family:sans-serif;">
+    <strong style="color:#00d4ff;font-size:14px;">${cp.name}</strong><br>
+    <span style="color:#64748b;font-size:12px;">${cp.km} km</span><br>
+    <span style="color:#39ff14;font-size:12px;">預計: ${cp.eta}</span><br>
+    ${cp.hotel?`<span style="color:#a855f7;font-size:11px;">🏨 ${cp.hotel}</span><br>`:''}
+    <span style="color:#94a3b8;font-size:11px;">${cp.note}</span><br>
+    <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+      <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cp.name)}@${cp.lat},${cp.lon}" target="_blank" style="background:#4285f4;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;text-decoration:none;">Google</a>
+      <a href="https://maps.apple.com/?q=${encodeURIComponent(cp.name)}&ll=${cp.lat},${cp.lon}" target="_blank" style="background:#ff9500;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;text-decoration:none;">Apple</a>
+    </div></div>`,{maxWidth:300});
 });
 
 // GPS
@@ -310,7 +302,7 @@ function startGPS(){
   gpsWatch=navigator.geolocation.watchPosition(pos=>{
     const isFirst=userLat===null;
     userLat=pos.coords.latitude;userLon=pos.coords.longitude;
-    document.getElementById('gpsStatusText').textContent='已定位 ✓';
+    document.getElementById('gpsStatusText').textContent='已定位 ✓（再按可回到位置）';
     document.getElementById('gpsCoords').textContent=`${userLat.toFixed(4)},${userLon.toFixed(4)}`;
     if(!gpsMarker){
       const icon=L.divIcon({className:'',html:'<div style="background:#00ff88;border:3px solid #fff;border-radius:50%;width:18px;height:18px;box-shadow:0 0 12px #00ff88;animation:pulse 1.5s infinite;"></div>',iconSize:[18,18],iconAnchor:[9,9]});
@@ -322,7 +314,7 @@ function startGPS(){
   },err=>{document.getElementById('gpsStatusText').textContent='定位失敗:'+err.message;},{enableHighAccuracy:true,maximumAge:10000});
 }
 function stopGPS(){if(gpsWatch)navigator.geolocation.clearWatch(gpsWatch);gpsWatch=null;document.getElementById('gpsDot').classList.remove('active');document.getElementById('gpsStatusText').textContent='已停止';}
-function findDist(lat,lon){let md=Infinity,mi=0;for(let i=0;i<ROUTE.length;i++){const dx=ROUTE[i][0]-lon,dy=ROUTE[i][1]-lat;const d=dx*dx+dy*dy;if(d<md){md=d;mi=i;}}return mi/ROUTE.length*TOTAL_KM;}
+function findDist(lat,lon){let md=Infinity,mi=0;for(let i=0;i<ROUTE.length;i++){const dx=ROUTE[i][0]-lon,dy=ROUTE[i][1]-lat,d=dx*dx+dy*dy;if(d<md){md=d;mi=i;}}return mi/ROUTE.length*TOTAL_KM;}
 function updateProgress(km){
   const pct=Math.min(100,km/TOTAL_KM*100);
   document.getElementById('pctDone').textContent=pct.toFixed(1)+'%';
@@ -330,14 +322,18 @@ function updateProgress(km){
   document.getElementById('riddenKm').textContent=km.toFixed(1)+' km';
   document.getElementById('remainKm').textContent=(TOTAL_KM-km).toFixed(1)+' km';
   let next=SCHEDULE.find(c=>c.km>km);
-  if(next){document.getElementById('nextCpName').textContent='下一站：'+next.name;document.getElementById('nextCpDist').textContent=`距離：${(next.km-km).toFixed(1)} km`;document.getElementById('nextCpETA').textContent=next.eta;}
+  if(next){
+    document.getElementById('nextCpName').textContent='下一站：'+next.name;
+    document.getElementById('nextCpDist').textContent=`距離：${(next.km-km).toFixed(1)} km`;
+    document.getElementById('nextCpETA').textContent=next.eta;
+  }
 }
 
 // SCHEDULE TABLE
 const badgeCls={start:'badge-start',finish:'badge-finish',sleep:'badge-sleep',photo:'badge-photo',supply:'badge-supply'};
 const badgeLbl={start:'🚩 出發',finish:'🏆 完賽',sleep:'🛌 住宿',photo:'📸 景點',supply:'補給'};
 const rowCls={sleep:'row-sleep',photo:'row-photo',finish:'row-finish'};
-document.getElementById('scheduleTable').innerHTML=SCHEDULE.map((s,i)=>`
+document.getElementById('scheduleTable').innerHTML=SCHEDULE.map(s=>`
   <tr class="${rowCls[s.type]||''}">
     <td><span class="time-mono" style="color:var(--muted);font-size:11px">${s.day}</span></td>
     <td>
@@ -367,18 +363,19 @@ document.getElementById('sleepCards').innerHTML=SLEEPS.map(s=>`
     <div class="sleep-detail"><span class="key">當天爬升</span><span class="val" style="color:var(--warn)">↑ ${s.climb} m</span></div>
     <div class="sleep-detail"><span class="key">最高點</span><span class="val">⛰ ${s.maxE} m</span></div>
     <div class="sleep-detail"><span class="key">純騎時間</span><span class="val">${s.rideH} h</span></div>
-    <div class="sleep-detail"><span class="key">預計到達</span><span class="val" style="color:var(--accent3)">${s.eta}</span></div>
+    <div class="sleep-detail"><span class="key">預計抵達</span><span class="val" style="color:var(--accent3)">${s.arrive}</span></div>
+    <div class="sleep-detail"><span class="key">ETA</span><span class="val" style="color:var(--accent3)">${s.eta}</span></div>
     <div class="sleep-detail"><span class="key">出發時間</span><span class="val" style="color:var(--sleep)">${s.depart}</span></div>
-    <div class="sleep-detail"><span class="key">備註</span><span class="val" style="color:var(--muted);font-size:11px">${s.note}</span></div>
     <div style="margin-top:10px;display:flex;gap:7px;flex-wrap:wrap;">
       <a class="nav-link nav-google" href="https://maps.google.com/?q=${s.lat},${s.lon}" target="_blank">📍 Google Map</a>
       <a class="nav-link nav-apple" href="https://maps.apple.com/?ll=${s.lat},${s.lon}" target="_blank">🍎 Apple Map</a>
     </div>
   </div>
 `).join('');
-document.getElementById('strategyGrid').innerHTML=[`<div class="strategy-card"><h3 style="color:var(--accent)">⚡ 分段配速</h3><ul><li><span>▸</span>D1 北橫台7甲（0–217km）：巴陵前爬升段 10 km/h，梨山前均速 14 km/h</li><li><span>▸</span>D2 力行產業道路（217–251km）：⚠️ 碎石陡坡，8–10 km/h，備備胎</li><li><span>▸</span>D2 霧社→嘉義（251–490km）：下山平路，均速 20 km/h</li><li><span>▸</span>D3 嘉義→荖濃（490–691km）：含南橫西段上山，13–16 km/h</li><li><span>▸</span>D6 池上→向陽（1046–1102km）：南橫東段爬升，10–13 km/h</li><li><span>▸</span>D6 花蓮縱谷（1102–1305km）：下坡平路，均速 22 km/h</li></ul></div>`,`<div class="strategy-card"><h3 style="color:var(--warn)">⚠️ 南橫管制說明</h3><ul><li><span>▸</span>D3 南橫西段梅山口：週五~一 07:00~14:00 進入，17:00 前離開</li><li><span>▸</span>D6 南橫東段向陽：同上規定，06:00 池上出發 → 08:58 進管制✅</li><li><span>▸</span>向陽管制站打卡後折返，不穿越埡口至花蓮側</li><li><span>▸</span>出發日建議：D1=週三 → D3=週五✅ → D6=週一✅</li><li><span>▸</span>查詢：168路況 168.thb.gov.tw</li><li><span>▸</span>玉山國家公園管理處 ysnp.gov.tw</li></ul></div>`,`<div class="strategy-card"><h3 style="color:var(--accent2)">⏰ 停留時間管理</h3><ul><li><span>▸</span>補給站：最多 10 分鐘，只拿食物不坐下</li><li><span>▸</span>午餐：最多 30 分鐘（梨山/嘉義/六龜/台東市）</li><li><span>▸</span>住宿 06:00 嚴格出發，不貪睡</li><li><span>▸</span>D2 力行道路建議 05:00 出發（天黑無燈）</li><li><span>▸</span>每天目標 21:00 前抵達住宿</li><li><span>▸</span>補給站停留累計每天不超過 2.5h</li></ul></div>`,`<div class="strategy-card"><h3 style="color:var(--accent3)">🗺 導航策略</h3><ul><li><span>▸</span>台灣 Google Maps 最穩定，離線地圖先下載</li><li><span>▸</span>力行產業道路：無手機訊號 40km，行前下載離線地圖</li><li><span>▸</span>南橫管制段：確認當日開放狀態再出發</li><li><span>▸</span>蘇花公路（D7）：注意大車，緊貼路肩</li><li><span>▸</span>Naver/KakaoMap 不適用台灣，改用 Google Maps</li><li><span>▸</span>路線 GPX 匯入 Garmin / Wahoo 備用</li></ul></div>`,`<div class="strategy-card"><h3 style="color:var(--sleep)">🌙 夜間與天候</h3><ul><li><span>▸</span>D1 北橫夜騎可能在梨山前（約 18:00 後）</li><li><span>▸</span>前燈 800 流明以上，後燈必備</li><li><span>▸</span>台灣 6 月颱風季，出發前確認天氣</li><li><span>▸</span>梨山/清境高山氣溫低，備長袖保暖</li><li><span>▸</span>蘇花公路颱風後路況不穩，注意落石</li><li><span>▸</span>南橫管制段氣溫驟降，2310m 需防寒</li></ul></div>`,`<div class="strategy-card"><h3 style="color:#ff6b35">🔧 機械應急</h3><ul><li><span>▸</span>力行產業道路碎石：備內胎 x2，補胎片，CO2 充氣筒</li><li><span>▸</span>鏈條快扣 x2，多功能工具組必帶</li><li><span>▸</span>南橫山區無手機訊號，大會支援車無法即時到達</li><li><span>▸</span>爆胎目標 10 分鐘內完成換胎</li><li><span>▸</span>嚴重機械問題：在梅山口/向陽管制站前解決</li><li><span>▸</span>備用電池組：保證燈光全程有電</li></ul></div>`].join('');
-document.getElementById('foodGrid').innerHTML=[`<div class="food-card"><div class="food-header">梨山水蜜桃＋高冷蔬菜</div><div class="food-body"><p style="color:var(--accent);font-size:10px;margin-bottom:6px">📍 台7甲沿線 / 梨山住宿（217km）&nbsp;<span class="food-tag">高山必吃</span></p><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">梨山賓館附近水果攤</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">水蜜桃、蘋果、梨，高山現摘，甜度無敵，補充天然糖分</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 梨山農民市集</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">梨山便利商店熱食</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">高山夜晚寒冷，來碗熱湯麵最舒服，補充碳水</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 梨山7-ELEVEN</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">合歡山生力農場</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">高冷蔬菜火鍋，騎完北橫後的完美犒賞</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 台14甲沿線</div></div></div></div>`,`<div class="food-card"><div class="food-header">嘉義雞肉飯＋火雞肉飯</div><div class="food-body"><p style="color:var(--accent);font-size:10px;margin-bottom:6px">📍 嘉義住宿（490km）&nbsp;<span class="food-tag">住宿前大補</span></p><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">噴水雞肉飯</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">嘉義最知名，Q彈雞肉飯，一碗補滿能量，CP值超高</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 嘉義市中正路</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">劉里長雞肉飯</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">在地人激推，份量大，醬汁鹹香，必加火雞肉</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 嘉義市文化路</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">嘉義東市場</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">60年夜市，砂鍋魚頭、蔥肉合餅、春捲，夜宵首選</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 嘉義市東市場</div></div></div></div>`,`<div class="food-card"><div class="food-header">六龜荖濃溪溫泉</div><div class="food-body"><p style="color:var(--accent);font-size:10px;margin-bottom:6px">📍 荖濃住宿（691km）&nbsp;<span class="food-tag">泡湯補血</span></p><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">桃源溫泉民宿</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">荖濃溪碳酸氫鈉泉，騎車後泡湯最爽，消除肌肉疲勞</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 高雄市桃源區</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">旗山老街米糕</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">旗山經典米糕，在地老店，米香四溢，一碗 45 元</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 高雄市旗山老街</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">甲仙芋頭冰</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">甲仙鄉特產，芋頭冰棒，南橫沿線最消暑選擇</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 高雄市甲仙區中正路</div></div></div></div>`,`<div class="food-card"><div class="food-header">枋寮海鮮＋牡蠣</div><div class="food-body"><p style="color:var(--accent);font-size:10px;margin-bottom:6px">📍 枋寮住宿（881km）&nbsp;<span class="food-tag">濱海海鮮</span></p><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">枋寮漁港海鮮攤</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">現撈海鮮，石斑魚、龍蝦、牡蠣，枋寮離漁港最近</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 屏東縣枋寮鄉漁港路</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">林邊蓮霧</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">黑珍珠蓮霧產地，甜脆多汁，天然能量補充</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 屏東縣林邊鄉</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">東港黑鮪魚（若繞路）</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">東港黑鮪魚季，生魚片肥美，屏東最頂海鮮</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 屏東縣東港鎮</div></div></div></div>`,`<div class="food-card"><div class="food-header">池上飯包＋鹿野紅烏龍</div><div class="food-body"><p style="color:var(--accent);font-size:10px;margin-bottom:6px">📍 池上住宿（1046km）&nbsp;<span class="food-tag">台東名物</span></p><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">池上飯包文化故事館</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">台灣鐵路便當發源地，排骨飯包香嫩可口，必吃！</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 台東縣池上鄉中正路223號</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">鹿野紅烏龍茶</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">台東高山烏龍，茶湯甘甜，騎完南迴後的最佳補品</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 台東縣鹿野鄉龍田村</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">關山米苔目</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">關山特色在地小食，Q彈甜香，騎行後輕食補充</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 台東縣關山鎮中華路</div></div></div></div>`,`<div class="food-card"><div class="food-header">花蓮餐廳＋原住民美食</div><div class="food-body"><p style="color:var(--accent);font-size:10px;margin-bottom:6px">📍 花蓮住宿（1305km）&nbsp;<span class="food-tag">海景大餐</span></p><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">東大門夜市</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">台灣最大原住民美食夜市，烤山豬肉、小米酒、原住民料理</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 花蓮縣花蓮市自由街58號</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">公正包子</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">花蓮最知名，皮薄餡多，肉汁爆漿，騎完一定要吃</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 花蓮縣花蓮市中山路316號</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">七星潭海鮮</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">花蓮七星潭現撈漁船，活魚三吃，海景配海鮮完美收尾</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 花蓮縣新城鄉七星潭</div></div></div></div>`,`<div class="food-card"><div class="food-header">礁溪溫泉＋基隆廟口</div><div class="food-body"><p style="color:var(--accent);font-size:10px;margin-bottom:6px">📍 D7 返程（1305–1548km）&nbsp;<span class="food-tag">完賽慶祝</span></p><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">礁溪溫泉公共浴場</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">蘇花公路騎完泡溫泉，碳酸氫鈉泉消除疲勞，免費或百元</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 宜蘭縣礁溪鄉礁溪路</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">基隆廟口夜市</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">台灣最知名夜市之一，鼎邊趖、蚵仔煎、豬血糕，完賽大吃</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 基隆市仁愛區仁三路</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;"><div style="font-weight:700;font-size:12px;">樂生療養院終點慶功宴</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">回到出發點，和隊友開慶功宴，啤酒+烤肉，完賽儀式感</div><div style="font-size:10px;color:var(--muted);margin-top:3px">📌 新莊樂生療養院旁</div></div></div></div>`].join('');
-document.getElementById('emergencySection').innerHTML=`<p style='color:var(--muted);font-size:13px;margin-bottom:16px'>緊急情況應對手冊</p><div class='em-grid'>`+`<div class='em-card'><h3>⏰ 落後超過 2 小時</h3><p>縮短所有補給站停留至 5 分鐘，午餐改為騎行中食用（飯糰+運動飲料）。</p><div class='em-highlight'>💡 提速 1-2 km/h，D2 力行道路是最容易落後的段，出發前確認天氣</div></div>`+`<div class='em-card'><h3>⚠️ 南橫管制臨時關閉</h3><p>D3 梅山口或 D6 向陽若遭遇臨時關閉，等待開放或繞道台20/台9。查詢168路況即時更新。</p><div class='em-highlight'>💡 提前一天確認管制狀態，若週一出發考慮調整行程</div></div>`+`<div class='em-card'><h3>🌧 颱風大雨</h3><p>台灣 6 月有鋒面，北橫/南橫/蘇花遇大雨能見度差。在安全地點避雨，不強行騎行山路。</p><div class='em-highlight'>💡 準備輕薄雨衣，下坡必減速，注意積水路段和落石</div></div>`+`<div class='em-card'><h3>🩹 身體異常</h3><p>膝蓋疼痛：降低踏頻，換更輕齒比，每30分鐘休息1分鐘。腸胃不適：避免油脂，改白粥。</p><div class='em-highlight'>💡 備普拿疼、肌肉貼布、電解質錠。不要硬撐，安全第一</div></div>`+`<div class='em-card'><h3>🔧 力行道路機械故障</h3><p>力行產業道路碎石 40km 無訊號，爆胎自行換，嚴重故障需走出去後才有救援。</p><div class='em-highlight'>💡 備胎 x2 必攜，工具組完整，碎石路段降速 5 km/h</div></div>`+`<div class='em-card'><h3>😴 深夜睡意</h3><p>在明亮便利商店進行 20 分鐘淺睡（設鬧鐘），起來後喝咖啡做伸展。</p><div class='em-highlight'>💡 不在路邊危險地點睡覺，D1 北橫夜騎段特別注意</div></div>`+`</div>`;
+
+document.getElementById('strategyGrid').innerHTML=[`<div class='strategy-card'><h3 style='color:var(--accent)'>⚡ 分段配速</h3><ul><li><span>▸</span>D1 北橫台7甲（0-217km）：爬升3899m，巴陵段10km/h，均速14km/h</li><li><span>▸</span>D2 力行產業道路（251km）：⚠️碎石陡坡8-10km/h，備備胎</li><li><span>▸</span>D2 霧社→嘉義（251-490km）：下山平路均速20km/h</li><li><span>▸</span>D3 嘉義→南橫西側（490-693km）：含上山段13-16km/h</li><li><span>▸</span>D4 南橫下山→南迴前段（693-881km）：下坡+平路均速18km/h</li><li><span>▸</span>D6 池上→向陽→花蓮（1046-1305km）：南橫東段爬升10-13km/h</li></ul></div>`,`<div class='strategy-card'><h3 style='color:var(--warn)'>⚠️ 南橫管制</h3><ul><li><span>▸</span>D3 梅山口（693-696km）：週五~一 07:00~14:00進入，17:00前離開</li><li><span>▸</span>D6 向陽管制站（1102km）：同上規定，06:00池上出發→08:58到✅</li><li><span>▸</span>兩處均為打卡後折返，不穿越埡口</li><li><span>▸</span>建議D1=週三：D3=週五✅，D6=週一✅</li><li><span>▸</span>查詢：168路況 168.thb.gov.tw</li><li><span>▸</span>玉山國家公園：ysnp.gov.tw</li></ul></div>`,`<div class='strategy-card'><h3 style='color:var(--accent2)'>⏰ 停留時間</h3><ul><li><span>▸</span>補給站：最多10分鐘，只拿東西不坐下</li><li><span>▸</span>午餐：最多30分鐘（梨山/嘉義/荖濃/台東）</li><li><span>▸</span>住宿嚴格06:00出發，不貪睡</li><li><span>▸</span>D2力行道路建議05:00出發（天黑前走完）</li><li><span>▸</span>每天目標21:00前抵達住宿</li><li><span>▸</span>南橫打卡控制在15-20分鐘</li></ul></div>`,`<div class='strategy-card'><h3 style='color:var(--accent3)'>🗺 導航策略</h3><ul><li><span>▸</span>Google Maps最穩定，離線地圖先下載</li><li><span>▸</span>力行產業道路40km無訊號，行前下載</li><li><span>▸</span>南橫管制段確認當日開放再出發</li><li><span>▸</span>海豚眼睛迴圈路段注意GPS偏移</li><li><span>▸</span>蘇花公路D7緊貼路肩，注意大車</li><li><span>▸</span>GPX匯入Garmin/Wahoo備用導航</li></ul></div>`,`<div class='strategy-card'><h3 style='color:var(--sleep)'>🌙 天候與夜騎</h3><ul><li><span>▸</span>D1北橫18:00後進入夜騎，前燈800流明以上</li><li><span>▸</span>梨山/南橫高山氣溫低，備長袖保暖衣</li><li><span>▸</span>台灣6月颱風季，出發前確認天氣</li><li><span>▸</span>蘇花公路颱風後注意落石</li><li><span>▸</span>南橫2310m最高點日夜溫差大</li><li><span>▸</span>夜騎必開後燈，反光背心建議穿戴</li></ul></div>`,`<div class='strategy-card'><h3 style='color:#ff6b35'>🔧 機械應急</h3><ul><li><span>▸</span>力行碎石路：備內胎x2、補胎片、CO2充氣筒</li><li><span>▸</span>鏈條快扣x2、多功能工具必帶</li><li><span>▸</span>南橫山區無訊號，嚴重問題需先撤出</li><li><span>▸</span>爆胎目標10分鐘換胎</li><li><span>▸</span>南迴多隧道，確認前後燈電量充足</li><li><span>▸</span>備用電池組確保燈光全程有電</li></ul></div>`].join('');
+document.getElementById('foodGrid').innerHTML=[`<div class='food-card'><div class='food-header'>梨山水蜜桃＋溫麵</div><div class='food-body'><p style='color:var(--accent);font-size:10px;margin-bottom:6px'>📍 北橫/梨山住宿 217km&nbsp;<span class='food-tag'>D1必吃</span></p><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>梨山水果攤</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>水蜜桃、蘋果現摘，補天然糖分</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 梨山農民市集</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>梨山便利商店熱食</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>高山夜晚寒冷，熱湯麵補碳水</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 梨山7-ELEVEN</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>梨山賓館餐廳</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>高山蔬菜料理，在地食材新鮮</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 梨山賓館</div></div></div></div>`,`<div class='food-card'><div class='food-header'>嘉義雞肉飯＋東市場</div><div class='food-body'><p style='color:var(--accent);font-size:10px;margin-bottom:6px'>📍 嘉義住宿 490km&nbsp;<span class='food-tag'>D2必吃</span></p><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>噴水雞肉飯</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>嘉義最知名，Q彈雞肉飯CP值超高</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 嘉義市中正路</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>劉里長雞肉飯</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>在地人激推，份量大醬汁鹹香</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 嘉義市文化路</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>嘉義東市場</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>60年夜市，砂鍋魚頭蔥肉合餅</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 嘉義市東市場</div></div></div></div>`,`<div class='food-card'><div class='food-header'>南橫原住民料理</div><div class='food-body'><p style='color:var(--accent);font-size:10px;margin-bottom:6px'>📍 南橫西側住宿 693km&nbsp;<span class='food-tag'>D3必吃</span></p><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>桃源鄉原住民餐廳</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>山豬肉、小米飯，布農族傳統料理</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 高雄市桃源區</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>荖濃溪溫泉泡腳</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>碳酸氫鈉泉消除腿部疲勞</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 高雄市六龜區</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>甲仙芋頭冰</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>甲仙特產，南橫沿線最消暑</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 高雄市甲仙區中正路</div></div></div></div>`,`<div class='food-card'><div class='food-header'>枋寮漁港海鮮</div><div class='food-body'><p style='color:var(--accent);font-size:10px;margin-bottom:6px'>📍 枋寮住宿 881km&nbsp;<span class='food-tag'>D4必吃</span></p><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>枋寮漁港現撈海鮮</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>石斑魚、牡蠣、龍蝦，屏東最鮮</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 屏東縣枋寮鄉漁港路</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>林邊黑珍珠蓮霧</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>屏東特產，甜脆多汁補天然糖分</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 屏東縣林邊鄉</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>東港黑鮪魚（繞路）</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>黑鮪魚生魚片，屏東頂級海鮮</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 屏東縣東港鎮</div></div></div></div>`,`<div class='food-card'><div class='food-header'>池上飯包＋鹿野紅烏龍</div><div class='food-body'><p style='color:var(--accent);font-size:10px;margin-bottom:6px'>📍 池上住宿 1046km&nbsp;<span class='food-tag'>D5必吃</span></p><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>池上飯包文化故事館</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>台灣便當發源地，排骨飯包香嫩</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 台東縣池上鄉中正路223號</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>鹿野紅烏龍茶</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>台東高山烏龍，茶湯甘甜舒壓</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 台東縣鹿野鄉龍田村</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>關山米苔目</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>台東在地特色，Q彈甜香輕食</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 台東縣關山鎮中華路</div></div></div></div>`,`<div class='food-card'><div class='food-header'>花蓮公正包子＋東大門</div><div class='food-body'><p style='color:var(--accent);font-size:10px;margin-bottom:6px'>📍 花蓮住宿 1305km&nbsp;<span class='food-tag'>D6必吃</span></p><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>公正包子</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>花蓮最知名，皮薄肉汁爆漿</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 花蓮縣花蓮市中山路316號</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>東大門夜市</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>原住民美食夜市，烤山豬肉小米酒</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 花蓮縣花蓮市自由街58號</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>七星潭海鮮</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>現撈活魚三吃，海景配海鮮</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 花蓮縣新城鄉七星潭</div></div></div></div>`,`<div class='food-card'><div class='food-header'>礁溪溫泉＋基隆廟口</div><div class='food-body'><p style='color:var(--accent);font-size:10px;margin-bottom:6px'>📍 D7返程 1305-1548km&nbsp;<span class='food-tag'>完賽慶祝</span></p><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>礁溪溫泉公共浴場</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>蘇花後泡湯消除疲勞，百元以內</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 宜蘭縣礁溪鄉礁溪路</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>基隆廟口夜市</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>完賽必吃，鼎邊趖蚵仔煎豬血糕</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 基隆市仁愛區仁三路</div></div><div style='background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 9px;margin-bottom:5px;'><div style='font-weight:700;font-size:12px'>樂生完賽慶功宴</div><div style='font-size:11px;color:#94a3b8;margin-top:2px'>回到起點，啤酒烤肉畫下完美句點</div><div style='font-size:10px;color:var(--muted);margin-top:3px'>📌 新莊樂生療養院旁</div></div></div></div>`].join('');
+document.getElementById('emergencySection').innerHTML=`<p style='color:var(--muted);font-size:13px;margin-bottom:16px'>緊急情況應對手冊</p><div class='em-grid'>`+`<div class='em-card'><h3>⏰ 落後超過2小時</h3><p>縮短補給停留至5分鐘，午餐改騎行中食用（飯糰+運動飲料），住宿提早起床。</p><div class='em-highlight'>💡 提速1-2km/h，D2力行道路最易落後，05:00出發搶天光</div></div>`+`<div class='em-card'><h3>⚠️ 南橫管制臨時關閉</h3><p>D3梅山口或D6向陽若臨時關閉，等待開放或由台20/台9繞道。</p><div class='em-highlight'>💡 提前一天查168路況，D1=週三出發D3週五/D6週一均開放</div></div>`+`<div class='em-card'><h3>🌧 颱風大雨</h3><p>北橫/南橫/蘇花遇大雨能見度差，在安全地點避雨，不強行騎山路。</p><div class='em-highlight'>💡 備輕薄雨衣，下坡必減速，注意積水路段和落石</div></div>`+`<div class='em-card'><h3>🩹 身體異常</h3><p>膝蓋痛：降踏頻換輕齒比，每30分鐘休息1分鐘。腸胃不適：改白粥避油脂。</p><div class='em-highlight'>💡 備普拿疼、肌肉貼布、電解質錠。不要硬撐，安全第一</div></div>`+`<div class='em-card'><h3>🔧 力行道路故障</h3><p>40km無訊號，爆胎自換，嚴重故障須走出山區才有救援。</p><div class='em-highlight'>💡 備胎x2必帶，工具組完整，碎石段降速5km/h，備慢胎剪</div></div>`+`<div class='em-card'><h3>😴 深夜睡意</h3><p>在明亮便利商店NASA睡眠法20分鐘（設鬧鐘），起來喝咖啡做伸展。</p><div class='em-highlight'>💡 D1北橫夜騎和D6南橫後特別注意，不在路邊危險地點睡覺</div></div>`+`</div>`;
 
 function showTab(name,el){
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
@@ -389,4 +386,6 @@ function showTab(name,el){
   const me=el||document.querySelector(`.mob-tab[onclick*="${name}"]`);if(me)me.classList.add('active');
   const bs=document.querySelector('.bottom-section');if(bs)bs.scrollTop=0;
 }
-</script></body></html>
+</script>
+</body>
+</html>
