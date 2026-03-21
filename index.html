@@ -410,36 +410,81 @@ const DINNERS = [
   {night:6,area:'花蓮市',note:'慢且洄瀾文旅附近美食集中，東大門夜市步行可達',shops:[{name:'梅蘊餚',type:'無菜單料理',rating:'★4.9',desc:'花蓮最高評分餐廳之一，無菜單海鮮料理，需提前訂位，週二三公休',hours:'14:00-21:00（週四~一）',lat:23.982993699999998,lon:121.62014819999999},{name:'梁庭滇緬美食',type:'雲南/緬甸料理',rating:'★4.7',desc:'花蓮特色滇緬菜，口味正宗，蝦醬炒蔬菜一絕，週一公休',hours:'11:00-14:00 / 17:00-20:30',lat:23.986210699999997,lon:121.62124379999997},{name:'萬寶家食堂',type:'台式家常',rating:'★4.7',desc:'花蓮親切家常料理，五香豬腩套餐258元超值，有英文菜單',hours:'11:30-14:00 / 17:00-20:00（週三公休）',lat:23.9759398,lon:121.61385039999999}]}
 ];
 
+const BREAKFASTS = [
+{night:1,nextDay:'D2',warn:'⚠️ 梨山選擇極少，05:30前吃完出發',shops:[{name:'山中晨食',type:'蛋餅・燒餅',rating:'★4.8',desc:'梨山中正路，炸排骨＋蘿蔔糕，06:00開，高山早晨暖胃',hours:'06:00-10:30',lat:24.254665,lon:121.255746},{name:'梨山找餐',type:'蛋餅・燒餅',rating:'★4.4',desc:'05:30就開，燒餅加蛋＋米漿，外帶方便，備足能量爬力行',hours:'05:30-11:00',lat:24.25588,lon:121.256171}]},
+{night:2,nextDay:'D3',warn:'✅ 嘉義早餐店多，隨便走都有',shops:[{name:'早安早點',type:'燒餅・油條',rating:'★4.4',desc:'嘉義延平街炭烤燒餅，06:00開，厚實Q彈，大排長龍在地人最愛',hours:'06:00-10:00（週一三休）',lat:23.477684,lon:120.460211},{name:'阿姨手作蛋餅',type:'手作蛋餅・豆漿',rating:'★4.2',desc:'嘉義05:30開，手工粉漿蛋餅＋有機豆漿，現做快速外帶',hours:'05:30-10:30（週日休）',lat:23.454921,lon:120.459536},{name:'可口味早餐店',type:'蛋餅・培根蛋',rating:'★4.4',desc:'嘉義誠仁街，06:10開，培根起司蛋餅超大份，豆漿現磨',hours:'06:10-10:50',lat:23.47518,lon:120.452744}]},
+{night:3,nextDay:'D4',warn:'⚠️ 南橫深山選擇很少！建議民宿詢問或荖濃快速解決',shops:[{name:'寶來蛋餐蚵仔煎（寶來）',type:'蛋餅・蚵仔煎',rating:'★4.6',desc:'荖濃中正路，06:00開，粉漿蛋餅＋蚵仔煎早餐，騎友大推',hours:'06:00-10:30',lat:23.109094,lon:120.700206},{name:'富林漢堡荖濃店',type:'漢堡・三明治',rating:'★4.6',desc:'荖濃最早早餐，05:00就開，漢堡外帶快速，出發前5分鐘解決',hours:'05:00-11:00',lat:23.072749,lon:120.67288}]},
+{night:4,nextDay:'D5',warn:'✅ 枋寮有幾間傳統早餐，05:00就開',shops:[{name:'你我他早餐',type:'蛋餅・飯糰',rating:'★4.7',desc:'枋寮中華路，04:30開，米漿飯糰＋蛋餅，在地人每天必來',hours:'04:30-12:00（週一休）',lat:22.384856,lon:120.597383},{name:'尾吉燒餅',type:'燒餅・燒餅加蛋',rating:'★4.7',desc:'枋寮巷內老燒餅，05:00開，現烤燒餅＋杏仁茶，8:30賣完就關',hours:'05:00-08:30（週四休）',lat:22.364157,lon:120.595572},{name:'蟳目魚粥（枋寮）',type:'魚粥・台式早餐',rating:'★4.6',desc:'枋寮05:00開，鮮魚牡蠣粥75元超划算，騎南迴前補充蛋白質',hours:'05:00-14:00（週一休）',lat:22.386956,lon:120.595889}]},
+{night:5,nextDay:'D6',warn:'⚠️ 南橫管制07:00開放！建議05:30吃早餐，06:00嚴格出發',shops:[{name:'盧大姐早餐（池上）',type:'蛋餅・大腸麵線',rating:'★4.6',desc:'池上05:00開，大腸麵線＋粉漿蛋餅，在地人天天報到',hours:'05:00-11:30',lat:23.124953,lon:121.216424},{name:'QQ飯糰（池上）',type:'飯糰・粉漿蛋餅',rating:'★4.9',desc:'池上05:40開，粉漿蛋餅＋飯糰外帶上山，週二休',hours:'05:40-10:30（週二休）',lat:23.123257,lon:121.218798},{name:'陳仔豆漿店（池上）',type:'燒餅・豆漿',rating:'★4.0',desc:'池上05:00開，燒餅油條＋熱豆漿，40年老店在地人吃，便宜快速',hours:'05:00-11:00',lat:23.122609,lon:121.217863}]},
+{night:6,nextDay:'D7',warn:'✅ 花蓮早餐選擇多，慢且洄瀾附近步行可達',shops:[{name:'山東豆漿大王（花蓮）',type:'燒餅・豆漿・油條',rating:'★4.4',desc:'花蓮博愛街，06:00開，燒餅油條＋鹹豆漿，花蓮最知名傳統早餐',hours:'06:00-11:00（週二休）',lat:23.980901,lon:121.60323},{name:'無名早餐店（花蓮）',type:'蛋餅・小籠包',rating:'★4.2',desc:'花蓮德安一街，05:30開，小籠包＋粉漿蛋餅，週一休',hours:'05:30-10:30（週一休）',lat:23.973948,lon:121.59562},{name:'瑄瑄手工粉漿蛋餅（花蓮）',type:'手工蛋餅・豆漿',rating:'★4.8',desc:'花蓮國聯二路，06:30開，手工粉漿蛋餅皮脆內軟，週一二三四休',hours:'06:30-11:30（一~四休，週五六日開）',lat:23.989785,lon:121.602849}]}
+];
+
 function renderDinners() {
   const cards = document.querySelectorAll('.sleep-card');
   cards.forEach((card, idx) => {
     const night = idx + 1;
+    // 晚餐
     const d = DINNERS.find(x => x.night === night);
-    if (!d) return;
-    const sec = document.createElement('div');
-    sec.className = 'dinner-section';
-    sec.innerHTML = `
-      <div class="dinner-title">🍽 周邊晚餐推薦</div>
-      <div class="dinner-note">${d.note}</div>
-      ${d.shops.map(s => `
-        <div class="dinner-shop">
-          <div class="dinner-shop-head">
-            <span class="dinner-shop-name">${s.name}</span>
-            <div class="dinner-shop-meta">
-              <span class="dinner-type">${s.type}</span>
-              <span class="dinner-rating">${s.rating}</span>
+    if (d) {
+      const sec = document.createElement('div');
+      sec.className = 'dinner-section';
+      sec.innerHTML = `
+        <div class="dinner-title">🍽 周邊晚餐推薦</div>
+        <div class="dinner-note">${d.note}</div>
+        ${d.shops.map(s => `
+          <div class="dinner-shop">
+            <div class="dinner-shop-head">
+              <span class="dinner-shop-name">${s.name}</span>
+              <div class="dinner-shop-meta">
+                <span class="dinner-type">${s.type}</span>
+                <span class="dinner-rating">${s.rating}</span>
+              </div>
+            </div>
+            <div class="dinner-desc">${s.desc}</div>
+            <div class="dinner-hours">🕐 ${s.hours}</div>
+            <div class="dinner-nav">
+              <a class="nav-link nav-google" href="https://maps.google.com/?q=${s.lat},${s.lon}" target="_blank">Google</a>
+              <a class="nav-link nav-apple" href="https://maps.apple.com/?ll=${s.lat},${s.lon}&q=${encodeURIComponent(s.name)}" target="_blank">Apple</a>
             </div>
           </div>
-          <div class="dinner-desc">${s.desc}</div>
-          <div class="dinner-hours">🕐 ${s.hours}</div>
-          <div class="dinner-nav">
-            <a class="nav-link nav-google" href="https://maps.google.com/?q=${s.lat},${s.lon}" target="_blank">Google</a>
-            <a class="nav-link nav-apple" href="https://maps.apple.com/?ll=${s.lat},${s.lon}&q=${encodeURIComponent(s.name)}" target="_blank">Apple</a>
-          </div>
+        `).join('')}
+      `;
+      card.appendChild(sec);
+    }
+    // 早餐
+    const b = BREAKFASTS.find(x => x.night === night);
+    if (b) {
+      const warnColor = b.warn.includes('⚠️') ? '#ffd700' : '#39ff14';
+      const bsec = document.createElement('div');
+      bsec.style.cssText = 'border-top:1px solid rgba(251,146,60,0.2);margin-top:12px;padding-top:12px;';
+      bsec.innerHTML = `
+        <div style="font-size:11px;letter-spacing:1.5px;color:#fb923c;font-family:'Share Tech Mono',monospace;
+          margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(251,146,60,0.3);">
+          ☀️ 隔天早餐推薦（${b.nextDay} 出發前）
         </div>
-      `).join('')}
-    `;
-    card.appendChild(sec);
+        <div style="font-size:11px;color:${warnColor};margin-bottom:10px;font-style:italic;">${b.warn}</div>
+        ${b.shops.map(s => `
+          <div style="background:rgba(255,165,0,0.05);border:1px solid rgba(255,165,0,0.2);
+            border-radius:6px;padding:7px 9px;margin-bottom:5px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+              <div style="font-weight:700;font-size:12px">${s.name}</div>
+              <span style="font-size:11px;color:#ffd700">${s.rating}</span>
+            </div>
+            <div style="font-size:10px;background:rgba(255,165,0,0.12);color:#fb923c;
+              padding:1px 6px;border-radius:4px;display:inline-block;margin-bottom:3px">${s.type}</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">${s.desc}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:3px">🕐 ${s.hours}</div>
+            <div style="margin-top:5px;display:flex;gap:5px;">
+              <a href="https://maps.google.com/?q=${s.lat},${s.lon}" target="_blank"
+                class="nav-link nav-google" style="font-size:10px;padding:2px 6px;">Google</a>
+              <a href="https://maps.apple.com/?ll=${s.lat},${s.lon}" target="_blank"
+                class="nav-link nav-apple" style="font-size:10px;padding:2px 6px;">Apple</a>
+            </div>
+          </div>
+        `).join('')}
+      `;
+      card.appendChild(bsec);
+    }
   });
 }
 renderDinners();
