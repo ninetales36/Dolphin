@@ -224,6 +224,7 @@ const SCHEDULE = [
   {day:'D1',km:157,name:'留茂安活動中心',lat:24.5318995,lon:121.4516551,type:'supply',climb:95,climbColor:'var(--muted)',eta:'06/01 14:08',note:'留茂安，思源啞口前'},
   {day:'D1',km:173,name:'全家 大同鑫南山店',lat:24.4406494,lon:121.3803567,type:'supply',climb:353,climbColor:'var(--accent2)',eta:'06/01 15:09',note:'南山，思源啞口後下坡'},
   {day:'D1',km:205,name:'7-ELEVEN 環山門市',lat:24.3117495,lon:121.2914795,type:'supply',climb:1074,climbColor:'var(--warn)',eta:'06/01 17:17',note:'環山部落，梨山前補給'},
+  {day:'D1→2',km:217,name:'梨山民宿(未確定)',lat:24.25752,lon:121.26007,type:'sleep',climb:122,climbColor:"'var(--muted)'",eta:'06/01 19:34',note:'D1住宿｜梨山海拔1960m，住宿未確定，需預訂', hotel:'梨山民宿(未確定)', depart:'06:00 出發'},
   {day:'D2',km:219,name:'全家 和平梨山店',lat:24.253919,lon:121.2522838,type:'supply',climb:122,climbColor:'var(--muted)',eta:'06/02 06:09',note:'梨山，全家便利商店'},
   {day:'D2',km:251,name:'力行社區發展協會',lat:24.146048,lon:121.190974,type:'supply',climb:799,climbColor:'var(--accent2)',eta:'06/02 07:56',note:'力行產業道路起點，⚠️碎石陡坡開始'},
   {day:'D2',km:282,name:'7-ELEVEN 好蒔光門市',lat:24.0227081,lon:121.1324653,type:'supply',climb:441,climbColor:'var(--accent2)',eta:'06/02 09:32',note:'好蒔光，霧社附近補給'},
@@ -269,11 +270,12 @@ const SCHEDULE = [
   {day:'D7',km:1548,name:'樂生療養院停車場',lat:25.0191799,lon:121.4082917,type:'finish',climb:88,climbColor:'var(--muted)',eta:'06/07 17:40',note:'🏁 完賽！海豚環島完成，回到樂生療養院'}
 ];
 const SLEEPS = [
-  {n:1,hotel:'洄嘉居行旅',km:490,eta:'06/02 18:43',depart:'06:00 出發',dist:217,climb:3899,maxE:1981,rideH:11.1,arrive:'19:34',lat:23.4682149,lon:120.4437235},
-  {n:2,hotel:'南橫•儒艾民宿',km:693,eta:'06/03 15:40',depart:'06:00 出發',dist:273,climb:2516,maxE:2530,rideH:11.8,arrive:'20:19',lat:23.239512,lon:120.8120256},
-  {n:3,hotel:'枋寮枋居背包客棧',km:881,eta:'06/04 14:43',depart:'06:00 出發',dist:203,climb:1098,maxE:556,rideH:9.0,arrive:'17:30',lat:22.3846645,lon:120.5981674},
-  {n:4,hotel:'池上懶羊羊民宿',km:1046,eta:'06/05 13:53',depart:'06:00 出發',dist:188,climb:1394,maxE:816,rideH:8.1,arrive:'16:36',lat:23.1203162,lon:121.2169836},
-  {n:5,hotel:'慢且洄瀾文旅',km:1305,eta:'06/06 18:35',depart:'06:00 出發',dist:165,climb:1246,maxE:468,rideH:7.3,arrive:'15:50',lat:23.9754917,lon:121.6063613}
+  {n:1,hotel:'梨山民宿(未確定)',km:217,eta:'06/01 19:34',depart:'06:00 出發',dist:217,climb:3899,maxE:1981,rideH:11.1,arrive:'19:34',lat:24.25752,lon:121.26007},
+  {n:2,hotel:'洄嘉居行旅',km:490,eta:'06/02 18:43',depart:'06:00 出發',dist:273,climb:2516,maxE:2530,rideH:11.8,arrive:'20:19',lat:23.4682149,lon:120.4437235},
+  {n:3,hotel:'南橫•儒艾民宿',km:693,eta:'06/03 15:40',depart:'06:00 出發',dist:273,climb:2516,maxE:2530,rideH:11.8,arrive:'20:19',lat:23.239512,lon:120.8120256},
+  {n:4,hotel:'枋寮枋居背包客棧',km:881,eta:'06/04 14:43',depart:'06:00 出發',dist:203,climb:1098,maxE:556,rideH:9.0,arrive:'17:30',lat:22.3846645,lon:120.5981674},
+  {n:5,hotel:'池上懶羊羊民宿',km:1046,eta:'06/05 13:53',depart:'06:00 出發',dist:188,climb:1394,maxE:816,rideH:8.1,arrive:'16:36',lat:23.1203162,lon:121.2169836},
+  {n:6,hotel:'慢且洄瀾文旅',km:1305,eta:'06/06 18:35',depart:'06:00 出發',dist:165,climb:1246,maxE:468,rideH:7.3,arrive:'15:50',lat:23.9754917,lon:121.6063613}
 ];
 
 // MAP
