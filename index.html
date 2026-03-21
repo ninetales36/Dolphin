@@ -111,7 +111,14 @@ tr:hover td{background:rgba(0,212,255,0.04);}
   table,thead,tbody,th,td,tr{display:block;} thead{display:none;}
   tr{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;padding:12px;position:relative;}
   tr.row-sleep{border-left:3px solid var(--sleep);} tr.row-finish{border-left:3px solid var(--finish);}
-  td{padding:3px 0;border:none;font-size:13px;} td:first-child{position:absolute;top:12px;right:12px;color:var(--muted);font-size:11px;}
+  td{padding:3px 0;border:none;font-size:13px;}
+  td:first-child{display:inline-block;background:var(--card2);color:var(--muted);font-size:10px;font-family:'Share Tech Mono',monospace;padding:2px 7px;border-radius:5px;margin-bottom:6px;position:static;}
+  td:nth-child(2){font-size:14px;font-weight:500;padding-bottom:4px;}
+  td:nth-child(3){color:var(--accent);font-family:'Share Tech Mono',monospace;}
+  td:nth-child(4){font-size:12px;}
+  td:nth-child(5){color:var(--accent3);font-family:'Share Tech Mono',monospace;font-size:15px;font-weight:700;}
+  td:nth-child(6){margin-top:4px;}
+  td:nth-child(7){margin-top:6px;}
   .strategy-grid,.food-grid,.sleep-cards{grid-template-columns:1fr;padding:10px;gap:10px;}
   .em-grid{grid-template-columns:1fr;} .emergency-section{padding:10px;}
 }
@@ -209,56 +216,56 @@ const TOTAL_KM = 1548;
 const ROUTE = [[121.44725,24.99390],[121.37605,25.03840],[121.30571,25.06153],[121.25046,25.11004],[121.21149,25.04773],[121.21954,24.97169],[121.26512,24.90367],[121.29052,24.84082],[121.35354,24.82484],[121.35489,24.76855],[121.35164,24.72402],[121.38384,24.67818],[121.42772,24.65085],[121.47602,24.64600],[121.48797,24.61201],[121.50384,24.58801],[121.45499,24.53846],[121.41156,24.46826],[121.36599,24.43055],[121.36889,24.40012],[121.32666,24.35864],[121.28896,24.31030],[121.25853,24.26198],[121.24351,24.22932],[121.22088,24.19209],[121.21061,24.16353],[121.18609,24.14409],[121.17235,24.11014],[121.15216,24.06100],[121.12802,24.01652],[121.06421,24.00418],[120.97842,23.97423],[120.93117,24.03008],[120.90628,24.05796],[120.89152,24.11074],[120.87715,24.15365],[120.84030,24.18698],[120.81103,24.26361],[120.72878,24.25153],[120.70002,24.17773],[120.68199,24.10179],[120.69615,24.01969],[120.68716,23.93492],[120.69550,23.85574],[120.64969,23.79486],[120.61130,23.73024],[120.56553,23.66994],[120.53437,23.59919],[120.49586,23.56263],[120.49047,23.50394],[120.47193,23.45414],[120.43223,23.39199],[120.40007,23.31014],[120.35307,23.23955],[120.33986,23.15862],[120.32104,23.07816],[120.30852,23.00405],[120.34475,22.92564],[120.37578,22.86236],[120.41998,22.81206],[120.45226,22.77910],[120.51989,22.74524],[120.57939,22.69851],[120.64325,22.71788],[120.62632,22.77878],[120.64016,22.86017],[120.65048,22.94389],[120.66537,23.01561],[120.68215,23.09546],[120.73862,23.13817],[120.79517,23.19746],[120.81717,23.24671],[120.77963,23.17695],[120.71468,23.12725],[120.67186,23.07166],[120.61888,23.07777],[120.57630,23.05568],[120.57972,23.00560],[120.56148,23.02421],[120.59085,23.06417],[120.62752,23.06708],[120.66776,23.04567],[120.65125,22.97454],[120.64739,22.88680],[120.62390,22.80883],[120.63751,22.73756],[120.63352,22.67341],[120.61072,22.59256],[120.63103,22.51847],[120.60934,22.45129],[120.60749,22.36810],[120.64437,22.28947],[120.68516,22.21097],[120.75432,22.20929],[120.82294,22.24517],[120.86705,22.27652],[120.89914,22.34627],[120.93394,22.42875],[120.96118,22.51164],[120.99370,22.59139],[121.03589,22.67028],[121.05396,22.75213],[121.08923,22.81375],[121.09367,22.88892],[121.12856,22.95344],[121.16064,23.03888],[121.20708,23.11335],[121.13886,23.13231],[121.06906,23.15188],[121.02975,23.17879],[121.02228,23.19411],[121.00593,23.23626],[120.99026,23.24590],[121.03112,23.20390],[121.03995,23.18097],[121.05063,23.15984],[121.12326,23.13529],[121.19964,23.13316],[121.26306,23.19148],[121.30592,23.26910],[121.31044,23.31893],[121.25312,23.31661],[121.26159,23.29649],[121.33664,23.32669],[121.36654,23.40997],[121.40317,23.48711],[121.39351,23.55479],[121.43551,23.62496],[121.48560,23.68960],[121.49843,23.75158],[121.52872,23.81842],[121.57323,23.88709],[121.60731,23.94639],[121.60910,24.02060],[121.62131,24.10714],[121.65633,24.17719],[121.71133,24.24149],[121.74752,24.30981],[121.77880,24.36708],[121.78531,24.43400],[121.82267,24.47445],[121.84913,24.52507],[121.86072,24.58463],[121.79637,24.63223],[121.77262,24.71193],[121.76365,24.79609],[121.82499,24.85710],[121.88402,24.92397],[121.94850,24.97988],[121.98828,25.01608],[121.90827,25.01664],[121.82348,25.02575],[121.75416,25.02774],[121.69908,25.00923],[121.61857,25.00393],[121.53598,24.98742]];
 const SCHEDULE = [
   {day:'D1',km:0,name:'樂生療養院停車場',lat:25.0191799,lon:121.4082917,type:'start',climb:0,climbColor:'var(--muted)',eta:'06/01 06:00',note:'海豚環島起點，新莊樂生療養院停車場'},
-  {day:'D1',km:25,name:'7',lat:25.111698,lon:121.254566,type:'supply',climb:265,climbColor:'var(--muted)',eta:'06/01 07:15',note:'三峽進北橫前最後市區補給'},
-  {day:'D1',km:50,name:'7',lat:24.9354194,lon:121.2340135,type:'supply',climb:93,climbColor:'var(--muted)',eta:'06/01 08:26',note:'成龍，台7甲沿途補給'},
+  {day:'D1',km:25,name:'7-ELEVEN 海湖門市',lat:25.111698,lon:121.254566,type:'supply',climb:265,climbColor:'var(--muted)',eta:'06/01 07:15',note:'三峽進北橫前最後市區補給'},
+  {day:'D1',km:50,name:'7-ELEVEN 成龍門市',lat:24.9354194,lon:121.2340135,type:'supply',climb:93,climbColor:'var(--muted)',eta:'06/01 08:26',note:'成龍，台7甲沿途補給'},
   {day:'D1',km:76,name:'萊爾富 復興旺詮店',lat:24.824448,lon:121.3546076,type:'supply',climb:265,climbColor:'var(--muted)',eta:'06/01 09:49',note:'復興鄉，進北橫山區'},
   {day:'D1',km:105,name:'巴陵大橋假日小吃',lat:24.6826554,lon:121.3797023,type:'supply',climb:605,climbColor:'var(--accent2)',eta:'06/01 11:30',note:'巴陵大橋，北橫深山小吃'},
   {day:'D1',km:136,name:'777|台7線77公里處',lat:24.611377,lon:121.4866561,type:'photo',climb:758,climbColor:'var(--accent2)',eta:'06/01 13:18',note:'📸 台7線77K高點，北橫景觀打卡'},
   {day:'D1',km:157,name:'留茂安活動中心',lat:24.5318995,lon:121.4516551,type:'supply',climb:95,climbColor:'var(--muted)',eta:'06/01 14:08',note:'留茂安，思源啞口前'},
   {day:'D1',km:173,name:'全家 大同鑫南山店',lat:24.4406494,lon:121.3803567,type:'supply',climb:353,climbColor:'var(--accent2)',eta:'06/01 15:09',note:'南山，思源啞口後下坡'},
-  {day:'D1',km:205,name:'7',lat:24.3117495,lon:121.2914795,type:'supply',climb:1074,climbColor:'var(--warn)',eta:'06/01 17:17',note:'環山部落，梨山前補給'},
+  {day:'D1',km:205,name:'7-ELEVEN 環山門市',lat:24.3117495,lon:121.2914795,type:'supply',climb:1074,climbColor:'var(--warn)',eta:'06/01 17:17',note:'環山部落，梨山前補給'},
   {day:'D2',km:219,name:'全家 和平梨山店',lat:24.253919,lon:121.2522838,type:'supply',climb:122,climbColor:'var(--muted)',eta:'06/02 06:09',note:'梨山，全家便利商店'},
   {day:'D2',km:251,name:'力行社區發展協會',lat:24.146048,lon:121.190974,type:'supply',climb:799,climbColor:'var(--accent2)',eta:'06/02 07:56',note:'力行產業道路起點，⚠️碎石陡坡開始'},
-  {day:'D2',km:282,name:'7',lat:24.0227081,lon:121.1324653,type:'supply',climb:441,climbColor:'var(--accent2)',eta:'06/02 09:32',note:'好蒔光，霧社附近補給'},
-  {day:'D2',km:328,name:'7',lat:24.0684075,lon:120.8755783,type:'supply',climb:244,climbColor:'var(--muted)',eta:'06/02 11:20',note:'水長流，台14線補給'},
-  {day:'D2',km:367,name:'7',lat:24.2744423,lon:120.7770108,type:'supply',climb:589,climbColor:'var(--accent2)',eta:'06/02 13:16',note:'石岡，台中地區補給'},
-  {day:'D2',km:400,name:'7',lat:24.0429074,lon:120.6916963,type:'supply',climb:0,climbColor:'var(--muted)',eta:'06/02 14:34',note:'新亞大，南投方向'},
+  {day:'D2',km:282,name:'7-ELEVEN 好蒔光門市',lat:24.0227081,lon:121.1324653,type:'supply',climb:441,climbColor:'var(--accent2)',eta:'06/02 09:32',note:'好蒔光，霧社附近補給'},
+  {day:'D2',km:328,name:'7-ELEVEN 水長流門市',lat:24.0684075,lon:120.8755783,type:'supply',climb:244,climbColor:'var(--muted)',eta:'06/02 11:20',note:'水長流，台14線補給'},
+  {day:'D2',km:367,name:'7-ELEVEN 新石岡門市',lat:24.2744423,lon:120.7770108,type:'supply',climb:589,climbColor:'var(--accent2)',eta:'06/02 13:16',note:'石岡，台中地區補給'},
+  {day:'D2',km:400,name:'7-ELEVEN 新亞大門市',lat:24.0429074,lon:120.6916963,type:'supply',climb:0,climbColor:'var(--muted)',eta:'06/02 14:34',note:'新亞大，南投方向'},
   {day:'D2',km:427,name:'全家 名間金交流店',lat:23.8467799,lon:120.6973682,type:'supply',climb:68,climbColor:'var(--muted)',eta:'06/02 15:53',note:'名間，南投平原補給'},
-  {day:'D2',km:453,name:'7',lat:23.6829055,lon:120.5697485,type:'supply',climb:94,climbColor:'var(--muted)',eta:'06/02 17:08',note:'廣濟，嘉義縣境'},
+  {day:'D2',km:453,name:'7-ELEVEN 廣濟門市',lat:23.6829055,lon:120.5697485,type:'supply',climb:94,climbColor:'var(--muted)',eta:'06/02 17:08',note:'廣濟，嘉義縣境'},
   {day:'D2',km:485,name:'OK 嘉義崇仁門市',lat:23.4782126,lon:120.4833549,type:'supply',climb:128,climbColor:'var(--muted)',eta:'06/02 18:35',note:'嘉義市區最後補給站'},
   {day:'D2→3',km:490,name:'洄嘉居行旅',lat:23.4682149,lon:120.4437235,type:'sleep',climb:0,climbColor:'var(--muted)',eta:'06/02 18:43',note:'D2住宿｜嘉義市區旅館', hotel:'洄嘉居行旅', depart:'06:00 出發'},
-  {day:'D3',km:523,name:'7',lat:23.2121958,lon:120.3509283,type:'supply',climb:87,climbColor:'var(--muted)',eta:'06/03 07:27',note:'烏山頭，台南山區'},
+  {day:'D3',km:523,name:'7-ELEVEN 烏山頭門市',lat:23.2121958,lon:120.3509283,type:'supply',climb:87,climbColor:'var(--muted)',eta:'06/03 07:27',note:'烏山頭，台南山區'},
   {day:'D3',km:555,name:'全家 關廟南雄店',lat:22.9610841,lon:120.3278607,type:'supply',climb:16,climbColor:'var(--muted)',eta:'06/03 08:54',note:'關廟，高雄平原入口'},
-  {day:'D3',km:615,name:'7',lat:22.7053027,lon:120.6397467,type:'supply',climb:355,climbColor:'var(--accent2)',eta:'06/03 11:46',note:'水門，屏東三地門7-11，南橫西口補給'},
-  {day:'D3',km:664,name:'7',lat:23.0727605,lon:120.6728886,type:'supply',climb:238,climbColor:'var(--muted)',eta:'06/03 14:03',note:'荖濃，南橫西段補給站'},
-  {day:'D3',km:681,name:'7',lat:23.1595607,lon:120.765563,type:'supply',climb:144,climbColor:'var(--muted)',eta:'06/03 15:02',note:'桃源，南橫深山補給'},
+  {day:'D3',km:615,name:'7-ELEVEN 水門門市',lat:22.7053027,lon:120.6397467,type:'supply',climb:355,climbColor:'var(--accent2)',eta:'06/03 11:46',note:'水門，屏東三地門，南橫西口補給'},
+  {day:'D3',km:664,name:'7-ELEVEN 荖濃門市',lat:23.0727605,lon:120.6728886,type:'supply',climb:238,climbColor:'var(--muted)',eta:'06/03 14:03',note:'荖濃，南橫西段補給站'},
+  {day:'D3',km:681,name:'7-ELEVEN 桃源門市',lat:23.1595607,lon:120.765563,type:'supply',climb:144,climbColor:'var(--muted)',eta:'06/03 15:02',note:'桃源，南橫深山補給'},
   {day:'D3→4',km:693,name:'南橫•儒艾民宿',lat:23.239512,lon:120.8120256,type:'sleep',climb:176,climbColor:'var(--muted)',eta:'06/03 15:40',note:'D3住宿｜南橫西側儒艾民宿，梅山口打卡後住此', hotel:'南橫•儒艾民宿', depart:'06:00 出發'},
   {day:'D4',km:696,name:'梅山遊客中心',lat:23.2633615,lon:120.8259715,type:'photo',climb:0,climbColor:'var(--muted)',eta:'06/04 06:06',note:'📸 梅山遊客中心，南橫管制站打卡（不過埡口）'},
-  {day:'D4',km:726,name:'7',lat:23.0727605,lon:120.6728886,type:'supply',climb:269,climbColor:'var(--muted)',eta:'06/04 07:32',note:'荖濃，返回補給'},
+  {day:'D4',km:726,name:'7-ELEVEN 荖濃門市',lat:23.0727605,lon:120.6728886,type:'supply',climb:269,climbColor:'var(--muted)',eta:'06/04 07:32',note:'荖濃，返回補給'},
   {day:'D4',km:759,name:'海豚眼睛',lat:23.004268,lon:120.601069,type:'photo',climb:296,climbColor:'var(--muted)',eta:'06/04 09:04',note:'📸 海豚眼睛景觀點，必拍打卡'},
-  {day:'D4',km:791,name:'7',lat:23.0727605,lon:120.6728886,type:'supply',climb:199,climbColor:'var(--muted)',eta:'06/04 10:33',note:'荖濃，再次補給'},
-  {day:'D4',km:840,name:'7',lat:22.7053027,lon:120.6397467,type:'supply',climb:422,climbColor:'var(--accent2)',eta:'06/04 12:52',note:'水門，台28往南迴前補給'},
+  {day:'D4',km:791,name:'7-ELEVEN 荖濃門市',lat:23.0727605,lon:120.6728886,type:'supply',climb:199,climbColor:'var(--muted)',eta:'06/04 10:33',note:'荖濃，再次補給'},
+  {day:'D4',km:840,name:'7-ELEVEN 水門門市',lat:22.7053027,lon:120.6397467,type:'supply',climb:422,climbColor:'var(--accent2)',eta:'06/04 12:52',note:'水門，台28往南迴前補給'},
   {day:'D4→5',km:881,name:'枋寮枋居背包客棧',lat:22.3846645,lon:120.5981674,type:'sleep',climb:81,climbColor:'var(--muted)',eta:'06/04 14:43',note:'D4住宿｜枋寮枋居背包客棧，台1/南迴交叉口', hotel:'枋寮枋居背包客棧', depart:'06:00 出發'},
-  {day:'D5',km:883,name:'7',lat:22.3681367,lon:120.6078703,type:'supply',climb:0,climbColor:'var(--muted)',eta:'06/05 06:06',note:'隆山7-11，枋寮鄰近補給'},
-  {day:'D5',km:906,name:'7',lat:22.1951622,lon:120.6914535,type:'supply',climb:64,climbColor:'var(--muted)',eta:'06/05 07:10',note:'楓港，南迴起點'},
-  {day:'D5',km:935,name:'7',lat:22.2947978,lon:120.8867233,type:'supply',climb:84,climbColor:'var(--muted)',eta:'06/05 08:30',note:'達武，南迴台東段補給'},
-  {day:'D5',km:972,name:'7',lat:22.5995061,lon:120.9965045,type:'supply',climb:413,climbColor:'var(--accent2)',eta:'06/05 10:18',note:'香蘭，台東海岸'},
-  {day:'D5',km:996,name:'7',lat:22.772756,lon:121.0789167,type:'supply',climb:124,climbColor:'var(--muted)',eta:'06/05 11:24',note:'祺淯，台東中段'},
-  {day:'D5',km:1019,name:'7',lat:22.9105214,lon:121.1362148,type:'supply',climb:154,climbColor:'var(--muted)',eta:'06/05 12:32',note:'新鹿野，台東北段補給'},
+  {day:'D5',km:883,name:'7-ELEVEN 隆山門市',lat:22.3681367,lon:120.6078703,type:'supply',climb:0,climbColor:'var(--muted)',eta:'06/05 06:06',note:'隆山7-11，枋寮鄰近補給'},
+  {day:'D5',km:906,name:'7-ELEVEN 楓港門市',lat:22.1951622,lon:120.6914535,type:'supply',climb:64,climbColor:'var(--muted)',eta:'06/05 07:10',note:'楓港，南迴起點'},
+  {day:'D5',km:935,name:'7-ELEVEN 達武門市',lat:22.2947978,lon:120.8867233,type:'supply',climb:84,climbColor:'var(--muted)',eta:'06/05 08:30',note:'達武，南迴台東段補給'},
+  {day:'D5',km:972,name:'7-ELEVEN 香蘭門市',lat:22.5995061,lon:120.9965045,type:'supply',climb:413,climbColor:'var(--accent2)',eta:'06/05 10:18',note:'香蘭，台東海岸'},
+  {day:'D5',km:996,name:'7-ELEVEN 祺淯門市',lat:22.772756,lon:121.0789167,type:'supply',climb:124,climbColor:'var(--muted)',eta:'06/05 11:24',note:'祺淯，台東中段'},
+  {day:'D5',km:1019,name:'7-ELEVEN 新鹿野門市',lat:22.9105214,lon:121.1362148,type:'supply',climb:154,climbColor:'var(--muted)',eta:'06/05 12:32',note:'新鹿野，台東北段補給'},
   {day:'D5→6',km:1046,name:'池上懶羊羊民宿',lat:23.1203162,lon:121.2169836,type:'sleep',climb:335,climbColor:'var(--accent2)',eta:'06/05 13:53',note:'D5住宿｜池上懶羊羊民宿，米鄉必住', hotel:'池上懶羊羊民宿', depart:'06:00 出發'},
   {day:'D6',km:1102,name:'南橫向陽管制站',lat:23.2474405,lon:120.9858522,type:'photo',climb:934,climbColor:'var(--accent2)',eta:'06/06 09:12',note:'📸 南橫向陽管制站打卡（不穿越）'},
-  {day:'D6',km:1158,name:'7',lat:23.1207498,lon:121.213276,type:'supply',climb:1156,climbColor:'var(--warn)',eta:'06/06 11:57',note:'池上7-11，南橫後返程補給'},
-  {day:'D6',km:1183,name:'7',lat:23.3208305,lon:121.3363123,type:'supply',climb:14,climbColor:'var(--muted)',eta:'06/06 12:51',note:'樂合，花蓮縱谷補給'},
+  {day:'D6',km:1158,name:'7-ELEVEN 池上門市',lat:23.1207498,lon:121.213276,type:'supply',climb:1156,climbColor:'var(--warn)',eta:'06/06 11:57',note:'池上，南橫後返程補給'},
+  {day:'D6',km:1183,name:'7-ELEVEN 樂合門市',lat:23.3208305,lon:121.3363123,type:'supply',climb:14,climbColor:'var(--muted)',eta:'06/06 12:51',note:'樂合，花蓮縱谷補給'},
   {day:'D6',km:1200,name:'八通關東段登山口',lat:23.3289391,lon:121.2348658,type:'photo',climb:4,climbColor:'var(--muted)',eta:'06/06 13:37',note:'📸 八通關東段登山口打卡'},
   {day:'D6',km:1233,name:'玉里春日派出所',lat:23.4550784,lon:121.3963906,type:'supply',climb:317,climbColor:'var(--accent2)',eta:'06/06 15:12',note:'玉里，花蓮縱谷補給'},
   {day:'D6',km:1287,name:'米棧休息商店',lat:23.8182785,lon:121.5288154,type:'supply',climb:174,climbColor:'var(--muted)',eta:'06/06 17:45',note:'米棧，蘇花前最後補給'},
-  {day:'D6→7',km:1305,name:'慢且洄瀾文旅1305km',lat:23.9754917,lon:121.6063613,type:'sleep',climb:72,climbColor:'var(--muted)',eta:'06/06 18:35',note:'D6住宿｜慢且洄瀾文旅，花蓮市區', hotel:'慢且洄瀾文旅1305km', depart:'06:00 出發'},
-  {day:'D7',km:1351,name:'7',lat:24.3092641,lon:121.7475989,type:'supply',climb:106,climbColor:'var(--muted)',eta:'06/07 08:01',note:'泰雅，宜蘭南澳補給'},
-  {day:'D7',km:1378,name:'7',lat:24.4650258,lon:121.8024654,type:'supply',climb:401,climbColor:'var(--accent2)',eta:'06/07 09:29',note:'南澳，宜蘭進入蘇花後'},
+  {day:'D6→7',km:1305,name:'慢且洄瀾文旅',lat:23.9754917,lon:121.6063613,type:'sleep',climb:72,climbColor:'var(--muted)',eta:'06/06 18:35',note:'D6住宿｜慢且洄瀾文旅，花蓮市區', hotel:'慢且洄瀾文旅', depart:'06:00 出發'},
+  {day:'D7',km:1351,name:'7-ELEVEN 泰雅門市',lat:24.3092641,lon:121.7475989,type:'supply',climb:106,climbColor:'var(--muted)',eta:'06/07 08:01',note:'泰雅，宜蘭南澳補給'},
+  {day:'D7',km:1378,name:'7-ELEVEN 南澳門市',lat:24.4650258,lon:121.8024654,type:'supply',climb:401,climbColor:'var(--accent2)',eta:'06/07 09:29',note:'南澳，宜蘭進入蘇花後'},
   {day:'D7',km:1415,name:'全家 冬山永興店',lat:24.653847,lon:121.7807404,type:'supply',climb:639,climbColor:'var(--accent2)',eta:'06/07 11:24',note:'冬山，宜蘭縱谷補給'},
-  {day:'D7',km:1449,name:'7',lat:24.9058848,lon:121.8704864,type:'supply',climb:347,climbColor:'var(--accent2)',eta:'06/07 13:04',note:'礁溪，宜蘭北端補給'},
+  {day:'D7',km:1449,name:'7-ELEVEN 新梗枋門市',lat:24.9058848,lon:121.8704864,type:'supply',climb:347,climbColor:'var(--accent2)',eta:'06/07 13:04',note:'礁溪，宜蘭北端補給'},
   {day:'D7',km:1499,name:'全家平溪十分店',lat:25.044702,lon:121.7793819,type:'supply',climb:41,climbColor:'var(--muted)',eta:'06/07 15:19',note:'平溪十分，新北山區'},
-  {day:'D7',km:1530,name:'7',lat:24.9885859,lon:121.559929,type:'supply',climb:284,climbColor:'var(--muted)',eta:'06/07 16:53',note:'新安康，汐止新莊前'},
+  {day:'D7',km:1530,name:'7-ELEVEN 新安康門市',lat:24.9885859,lon:121.559929,type:'supply',climb:284,climbColor:'var(--muted)',eta:'06/07 16:53',note:'新安康，汐止新莊前'},
   {day:'D7',km:1548,name:'樂生療養院停車場',lat:25.0191799,lon:121.4082917,type:'finish',climb:88,climbColor:'var(--muted)',eta:'06/07 17:40',note:'🏁 完賽！海豚環島完成，回到樂生療養院'}
 ];
 const SLEEPS = [
@@ -266,7 +273,7 @@ const SLEEPS = [
   {n:2,hotel:'南橫•儒艾民宿',km:693,eta:'06/03 15:40',depart:'06:00 出發',dist:273,climb:2516,maxE:2530,rideH:11.8,arrive:'20:19',lat:23.239512,lon:120.8120256},
   {n:3,hotel:'枋寮枋居背包客棧',km:881,eta:'06/04 14:43',depart:'06:00 出發',dist:203,climb:1098,maxE:556,rideH:9.0,arrive:'17:30',lat:22.3846645,lon:120.5981674},
   {n:4,hotel:'池上懶羊羊民宿',km:1046,eta:'06/05 13:53',depart:'06:00 出發',dist:188,climb:1394,maxE:816,rideH:8.1,arrive:'16:36',lat:23.1203162,lon:121.2169836},
-  {n:5,hotel:'慢且洄瀾文旅1305km',km:1305,eta:'06/06 18:35',depart:'06:00 出發',dist:165,climb:1246,maxE:468,rideH:7.3,arrive:'15:50',lat:23.9754917,lon:121.6063613}
+  {n:5,hotel:'慢且洄瀾文旅',km:1305,eta:'06/06 18:35',depart:'06:00 出發',dist:165,climb:1246,maxE:468,rideH:7.3,arrive:'15:50',lat:23.9754917,lon:121.6063613}
 ];
 
 // MAP
